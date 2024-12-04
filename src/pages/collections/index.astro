@@ -1,0 +1,318 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import TimelineIndicator from "../../components/TimelineIndicator.astro";
+import { artworks } from "../../data/artworks";
+
+// Group artworks by collection theme and sort by latest first
+const collections = Object.entries({
+  Superposition: Array.isArray(artworks)
+    ? artworks.filter((a) => a.id.includes("superposition"))
+    : [],
+  Intrication: Array.isArray(artworks)
+    ? artworks.filter((a) => a.id.includes("intrication"))
+    : [],
+  Dualité: Array.isArray(artworks)
+    ? artworks.filter((a) => a.id.includes("dualite"))
+    : [],
+  "État Fondamental": Array.isArray(artworks)
+    ? artworks.filter((a) => a.id.includes("etat-fondamental"))
+    : [],
+}).reverse();
+---
+
+<Layout title="Collections | Art Quantique">
+  <main class="collections-page">
+    <header class="collection-header glass-card">
+      <h1>Collections</h1>
+      <p class="subtitle">
+        Explorez les différentes séries d'œuvres quantiques
+      </p>
+    </header>
+
+    <div class="collections-timeline">
+      {
+        collections.map(([name, works], index) => (
+          <section class="collection-section glass-card" data-index={index}>
+            <TimelineIndicator year={works[0]?.year} index={index} />
+
+            <div class="collection-content">
+              <div class="collection-info">
+                <h2>{name}</h2>
+                <p class="collection-description">{works[0]?.details}</p>
+              </div>
+
+              <div class="collection-preview">
+                {works.map((artwork) => (
+                  <a
+                    href={`/collections/${artwork.id}`}
+                    class="artwork-preview"
+                  >
+                    <div class="preview-image-container">
+                      <img src={artwork.image} alt={artwork.title} />
+                      <div class="preview-overlay">
+                        <h3>{artwork.title}</h3>
+                        <p>{artwork.description}</p>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .collections-page {
+    min-height: 100vh;
+    padding: 8rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .collection-header {
+    text-align: center;
+    padding: 3rem;
+    margin-bottom: 4rem;
+    background: linear-gradient(
+      135deg,
+      rgba(25, 25, 25, 0.8),
+      rgba(33, 33, 33, 0.6)
+    );
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInDown 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes fadeInDown {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: var(--quantum-white);
+    opacity: 0.8;
+  }
+
+  .collections-timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .collection-section {
+    padding: 2rem;
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .collection-section.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .collection-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      45deg,
+      rgba(var(--quantum-blue-rgb), 0.1),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .collection-section:hover::before {
+    opacity: 1;
+  }
+
+  .collection-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .collection-info {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+  }
+
+  .collection-section.visible .collection-info {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .collection-info h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .collection-description {
+    color: var(--quantum-white);
+    opacity: 0.8;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .collection-preview {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+  }
+
+  .collection-section.visible .collection-preview {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .artwork-preview {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .preview-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .artwork-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+  }
+
+  .artwork-preview:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(var(--quantum-blue-rgb), 0.2);
+  }
+
+  .artwork-preview:hover img {
+    transform: scale(1.1);
+  }
+
+  .artwork-preview:hover .preview-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .preview-overlay h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .preview-overlay p {
+    font-size: 0.9rem;
+    color: var(--quantum-white);
+    opacity: 0.8;
+  }
+
+  @media (max-width: 1024px) {
+    .collection-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .collection-preview {
+      grid-template-columns: 1fr;
+    }
+
+    .collections-page {
+      padding: 6rem 1rem;
+    }
+  }
+</style>
+
+<script>
+  function handleScroll() {
+    const sections = document.querySelectorAll(".collection-section");
+    const timelineIndicators = document.querySelectorAll(".timeline-indicator");
+
+    sections.forEach((section, index) => {
+      const rect = section.getBoundingClientRect();
+      const isVisible = rect.top <= window.innerHeight * 0.8;
+
+      if (isVisible) {
+        section.classList.add("visible");
+        timelineIndicators[index].classList.add("visible");
+
+        // Update timeline progress
+        const progress =
+          timelineIndicators[index].querySelector(".timeline-progress");
+        const percentVisible = Math.min(
+          1,
+          (window.innerHeight * 0.8 - rect.top) / rect.height
+        );
+        (progress as HTMLElement).style.height = `${percentVisible * 100}%`;
+      }
+    });
+  }
+
+  // Initialize
+  document.addEventListener("DOMContentLoaded", () => {
+    handleScroll(); // Initial check
+    window.addEventListener("scroll", handleScroll);
+  });
+</script>

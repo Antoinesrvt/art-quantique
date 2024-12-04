@@ -1,0 +1,349 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { artworks } from '../../data/artworks';
+
+const collections = [...new Set(artworks.map(a => a.id.split('-')[0]))];
+const colors = ['red', 'blue', 'yellow', 'white'];
+
+// Get collection filter from URL if present
+const urlParams = new URL(Astro.request.url).searchParams;
+const initialCollection = urlParams.get('collection');
+---
+
+<Layout title="Œuvres | Art Quantique">
+  <main class="artworks-page">
+    <header class="artworks-header glass-card">
+      <h1>Œuvres</h1>
+      <p class="subtitle">Explorez toutes les œuvres de l'Art Quantique</p>
+    </header>
+
+    <div class="filters-container glass-card">
+      <div class="search-container">
+        <div class="search-wrapper">
+          <input 
+            type="text" 
+            id="search" 
+            placeholder="Rechercher une œuvre..."
+            class="search-input"
+          />
+          <div class="search-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-groups">
+        <div class="filter-group">
+          <h3>Collection</h3>
+          <div class="filter-options">
+            {collections.map(collection => (
+              <button 
+                class={`filter-btn ${collection === initialCollection ? 'active' : ''}`} 
+                data-filter="collection" 
+                data-value={collection}
+              >
+                {collection}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <h3>Couleur dominante</h3>
+          <div class="filter-options">
+            {colors.map(color => (
+              <button 
+                class="filter-btn color-btn"
+                data-filter="color" 
+                data-value={color}
+                style={`--color: var(--quantum-${color})`}
+              >
+                <span class="color-dot"></span>
+                {color}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="artworks-grid" id="artworks-grid">
+      {artworks.map(artwork => (
+        <a href={`/artworks/${artwork.id}`} class="artwork-card glass-card">
+          <div class="artwork-image">
+            <img src={artwork.image} alt={artwork.title} />
+          </div>
+          <div class="artwork-info">
+            <h2>{artwork.title}</h2>
+            <p>{artwork.description}</p>
+            <div class="artwork-meta">
+              <span>{artwork.year}</span>
+              <span>{artwork.dimensions}</span>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .artworks-page {
+    min-height: 100vh;
+    padding: 8rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .artworks-header {
+    text-align: center;
+    padding: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .artworks-header h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: var(--quantum-white);
+    opacity: 0.8;
+  }
+
+  .filters-container {
+    margin-bottom: 3rem;
+    padding: 2rem;
+  }
+
+  .search-container {
+    margin-bottom: 2rem;
+  }
+
+  .search-wrapper {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    padding-right: 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--quantum-white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--quantum-blue);
+  }
+
+  .search-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--quantum-white);
+    opacity: 0.5;
+  }
+
+  .filter-groups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .filter-group h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    color: var(--quantum-white);
+    opacity: 0.6;
+  }
+
+  .filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--quantum-white);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .filter-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .filter-btn.active {
+    background: var(--quantum-blue);
+    border-color: var(--quantum-blue);
+  }
+
+  .color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color);
+  }
+
+  .artworks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .artwork-card {
+    text-decoration: none;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .artwork-image {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 12px;
+  }
+
+  .artwork-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .artwork-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .artwork-card:hover img {
+    transform: scale(1.05);
+  }
+
+  .artwork-info {
+    padding: 1.5rem;
+  }
+
+  .artwork-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .artwork-info p {
+    color: var(--quantum-white);
+    opacity: 0.8;
+    margin-bottom: 1rem;
+  }
+
+  .artwork-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--quantum-white);
+    opacity: 0.6;
+  }
+
+  @media (max-width: 768px) {
+    .artworks-page {
+      padding: 6rem 1rem;
+    }
+
+    .filter-groups {
+      grid-template-columns: 1fr;
+    }
+
+    .artworks-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  let activeFilters = {
+    collection: null,
+    color: null,
+    search: ''
+  };
+
+  function updateArtworks() {
+    const artworks = document.querySelectorAll('.artwork-card');
+    
+    artworks.forEach(artwork => {
+      const title = artwork.querySelector('h2').textContent.toLowerCase();
+      const description = artwork.querySelector('p').textContent.toLowerCase();
+      const id = artwork.getAttribute('href').split('/').pop();
+      
+      const matchesSearch = !activeFilters.search || 
+        title.includes(activeFilters.search.toLowerCase()) ||
+        description.includes(activeFilters.search.toLowerCase());
+        
+      const matchesCollection = !activeFilters.collection ||
+        id.includes(activeFilters.collection);
+        
+      const matchesColor = !activeFilters.color ||
+        artwork.querySelector('img').getAttribute('src').includes(activeFilters.color);
+      
+      artwork.style.display = matchesSearch && matchesCollection && matchesColor ? 'block' : 'none';
+      artwork.style.opacity = matchesSearch && matchesCollection && matchesColor ? '1' : '0';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    searchInput.addEventListener('input', (e) => {
+      activeFilters.search = e.target.value;
+      updateArtworks();
+    });
+    
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        const value = btn.dataset.value;
+        
+        if (activeFilters[filter] === value) {
+          activeFilters[filter] = null;
+          btn.classList.remove('active');
+        } else {
+          document.querySelectorAll(`[data-filter="${filter}"]`)
+            .forEach(b => b.classList.remove('active'));
+          
+          activeFilters[filter] = value;
+          btn.classList.add('active');
+        }
+        
+        updateArtworks();
+      });
+    });
+  });
+</script>

@@ -1,0 +1,114 @@
+---
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary';
+}
+
+const { href, variant = 'primary' } = Astro.props;
+---
+
+<a href={href} class={`quantum-button ${variant}`}>
+  <div class="button-content">
+    <slot />
+  </div>
+  <div class="button-border"></div>
+  <div class="button-particles"></div>
+</a>
+
+<style>
+  .quantum-button {
+    position: relative;
+    padding: 1.2rem 2.5rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    z-index: 1;
+  }
+
+  .button-content {
+    position: relative;
+    z-index: 2;
+    color: var(--quantum-white);
+  }
+
+  .button-border {
+    position: absolute;
+    inset: 0;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background: linear-gradient(45deg, 
+      var(--cta-primary), 
+      var(--quantum-white), 
+      var(--cta-primary)
+    ) border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .button-particles {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+      rgba(var(--cta-primary-rgb), 0.4) 0%,
+      transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+  }
+
+  .primary {
+    background: var(--cta-primary);
+    backdrop-filter: blur(5px);
+  }
+
+  .secondary {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .quantum-button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(var(--cta-primary-rgb), 0.2);
+  }
+
+  .primary:hover {
+    background: var(--cta-hover);
+  }
+
+  .quantum-button:hover .button-border {
+    opacity: 1;
+  }
+
+  .quantum-button:hover .button-particles {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll('.quantum-button');
+  
+  buttons.forEach(button => {
+    const particles = button.querySelector('.button-particles');
+    
+    button.addEventListener('mousemove', (e) => {
+      const rect = button.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      particles.style.setProperty('--x', `${x}%`);
+      particles.style.setProperty('--y', `${y}%`);
+    });
+  });
+</script>

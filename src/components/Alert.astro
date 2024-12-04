@@ -1,0 +1,85 @@
+---
+interface Props {
+  type: 'success' | 'error';
+}
+
+const { type } = Astro.props;
+---
+
+<div class={`alert ${type}`} role="alert">
+  <slot />
+  <button class="close-btn" aria-label="Close alert">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+</div>
+
+<style>
+  .alert {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--quantum-white);
+    transform: translateX(150%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+  }
+
+  .alert.show {
+    transform: translateX(0);
+  }
+
+  .success {
+    background: rgba(46, 213, 115, 0.9);
+  }
+
+  .error {
+    background: rgba(255, 71, 87, 0.9);
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: currentColor;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: grid;
+    place-items: center;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+
+  .close-btn:hover {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  class Alert extends HTMLElement {
+    constructor() {
+      super();
+      
+      const closeBtn = this.querySelector('.close-btn');
+      closeBtn?.addEventListener('click', () => this.hide());
+    }
+
+    show() {
+      this.classList.add('show');
+      setTimeout(() => this.hide(), 5000);
+    }
+
+    hide() {
+      this.classList.remove('show');
+    }
+  }
+
+  customElements.define('quantum-alert', Alert);
+</script>

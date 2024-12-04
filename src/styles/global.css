@@ -1,0 +1,100 @@
+:root {
+  --quantum-red: rgb(255, 59, 48);
+  --quantum-blue: rgb(10, 132, 255);
+  --quantum-yellow: rgb(255, 214, 10);
+  --quantum-white: rgb(242, 242, 247);
+  --quantum-black: rgb(0, 0, 0);
+  --glass-bg: rgba(25, 25, 25, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --quantum-red-rgb: 255, 59, 48;
+  --quantum-blue-rgb: 10, 132, 255;
+  --quantum-yellow-rgb: 255, 214, 10;
+  --background: #191919;
+  
+  /* New CTA colors */
+  --cta-primary: rgba(78, 168, 222, 0.8);
+  --cta-primary-rgb: 78, 168, 222;
+  --cta-hover: rgba(98, 188, 242, 0.9);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--quantum-white);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px rgba(var(--quantum-blue-rgb), 0.2);
+}
+
+section {
+  padding: 4rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Disable smooth scrolling for no-scroll pages */
+html.no-scroll {
+  scroll-behavior: auto;
+}
+
+@media (max-width: 768px) {
+  h1 { font-size: 3rem; }
+  .gallery { grid-template-columns: 1fr; }
+  nav ul { gap: 1.5rem; }
+  .scroll-indicator { display: none; }
+}
+</style>
+
+<script>
+  // Intersection Observer for section animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '50px'
+  });
+
+  // Wait for DOM content to be loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
+    });
+  });
+</script>

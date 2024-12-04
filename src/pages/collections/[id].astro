@@ -1,0 +1,253 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ArtworkCard from '../../components/ArtworkCard.astro';
+import CallToAction from '../../components/CallToAction.astro';
+import { artworks } from '../../data/artworks';
+
+export function getStaticPaths() {
+  const collections = [...new Set(artworks.map(a => a.id.split('-')[0]))];
+  
+  return collections.map(collection => {
+    const collectionArtworks = artworks.filter(a => a.id.startsWith(collection));
+    const firstArtwork = collectionArtworks[0];
+    
+    return {
+      params: { id: collection },
+      props: { 
+        artworks: collectionArtworks,
+        title: getCollectionTitle(collection),
+        description: getCollectionDescription(collection),
+        coverImage: firstArtwork?.image
+      }
+    };
+  });
+}
+
+function getCollectionTitle(id: string) {
+  const titles = {
+    'superposition': 'Collection Superposition',
+    'intrication': 'Collection Intrication',
+    'dualite': 'Collection Dualité',
+    'etat': 'Collection État Fondamental'
+  };
+  return titles[id] || 'Collection';
+}
+
+function getCollectionDescription(id: string) {
+  const descriptions = {
+    'superposition': 'Une exploration visuelle des états quantiques superposés, où les particules existent simultanément dans plusieurs états.',
+    'intrication': 'Une représentation de la connexion mystérieuse entre les particules, transcendant l\'espace et le temps.',
+    'dualite': 'L\'expression de la nature double de la matière, entre ondes et particules.',
+    'etat': 'La recherche de l\'équilibre parfait dans l\'état d\'énergie le plus bas.'
+  };
+  return descriptions[id] || '';
+}
+
+const { id } = Astro.params;
+const { artworks: collectionArtworks = [], title, description, coverImage } = Astro.props;
+---
+
+<Layout title={`${title} | Art Quantique`} description={description} image={coverImage}>
+  <main class="collection-detail">
+    <header class="collection-header glass-card">
+      <div class="header-content">
+        <h1>{title}</h1>
+        <p class="description">{description}</p>
+        <div class="collection-meta">
+          <div class="meta-item">
+            <span class="label">Œuvres</span>
+            <span class="value">{collectionArtworks?.length || 0}</span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Année</span>
+            <span class="value">{collectionArtworks?.[0]?.year || '-'}</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-background" style={`--bg-image: url(${coverImage})`}></div>
+    </header>
+
+    <section class="collection-artworks">
+      <div class="artworks-grid">
+        {collectionArtworks.map(artwork => (
+          <ArtworkCard {...artwork} />
+        ))}
+      </div>
+    </section>
+
+    <section class="collection-cta glass-card">
+      <h2>Intéressé par cette collection ?</h2>
+      <p>Contactez-moi pour en savoir plus sur les œuvres disponibles</p>
+      <div class="cta-buttons">
+        <CallToAction href="/contact">Me Contacter</CallToAction>
+        <CallToAction href="/collections" variant="secondary">Voir Toutes les Collections</CallToAction>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .collection-detail {
+    padding: 8rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .collection-header {
+    position: relative;
+    padding: 4rem;
+    margin-bottom: 4rem;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+  }
+
+  .header-background {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px);
+    transform: scale(1.1);
+    z-index: 1;
+  }
+
+  h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInDown 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .description {
+    font-size: 1.2rem;
+    color: var(--quantum-white);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+  }
+
+  .collection-meta {
+    display: flex;
+    gap: 3rem;
+    margin-top: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--quantum-white);
+    opacity: 0.6;
+  }
+
+  .value {
+    font-size: 1.5rem;
+    color: var(--quantum-blue);
+  }
+
+  .collection-artworks {
+    margin: 4rem 0;
+  }
+
+  .artworks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+
+  .collection-cta {
+    text-align: center;
+    padding: 4rem;
+    margin: 4rem 0;
+  }
+
+  .collection-cta h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .collection-cta p {
+    color: var(--quantum-white);
+    opacity: 0.8;
+    margin-bottom: 2rem;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+  }
+
+  @keyframes fadeInDown {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .collection-detail {
+      padding: 6rem 1rem;
+    }
+
+    .collection-header {
+      padding: 2rem;
+      min-height: 300px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    .collection-meta {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .artworks-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .collection-cta h2 {
+      font-size: 2rem;
+    }
+  }
+</style>

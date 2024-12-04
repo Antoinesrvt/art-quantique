@@ -1,0 +1,243 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Alert from '../components/Alert.astro';
+---
+
+<Layout title="Contact | Art Quantique">
+  <main class="contact-page">
+    <div class="contact-container">
+      <div class="contact-content glass-card">
+        <h1>Contact</h1>
+        <p class="subtitle">Pour toute demande concernant mes œuvres ou l'Art Quantique</p>
+
+        <form class="contact-form" id="contact-form">
+          <div class="form-group">
+            <label for="name">Nom</label>
+            <input type="text" id="name" name="name" required class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Sujet</label>
+            <select id="subject" name="subject" required class="form-input">
+              <option value="">Sélectionnez un sujet</option>
+              <option value="acquisition">Acquisition d'œuvre</option>
+              <option value="exposition">Exposition</option>
+              <option value="collaboration">Collaboration</option>
+              <option value="autre">Autre demande</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required class="form-input" rows="5"></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            Envoyer
+            <div class="btn-particles"></div>
+          </button>
+        </form>
+      </div>
+
+      <div class="contact-info glass-card">
+        <div class="info-section">
+          <h3>Galerie</h3>
+          <p>Art Quantique Gallery<br />75001 Paris, France</p>
+        </div>
+
+        <div class="info-section">
+          <h3>Horaires</h3>
+          <p>Du mardi au samedi<br />10h - 19h</p>
+        </div>
+
+        <div class="info-section">
+          <h3>Contact direct</h3>
+          <p>contact@artquantique.com<br />+33 (0)1 23 45 67 89</p>
+        </div>
+      </div>
+    </div>
+
+    <Alert type="success">Message envoyé avec succès !</Alert>
+    <Alert type="error">Une erreur est survenue. Veuillez réessayer.</Alert>
+  </main>
+</Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const successAlert = document.querySelector('.alert.success') as HTMLElement;
+  const errorAlert = document.querySelector('.alert.error') as HTMLElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        form.reset();
+        successAlert.show();
+      } else {
+        errorAlert.show();
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      errorAlert.show();
+    }
+  });
+</script>
+
+<style>
+  .contact-page {
+    min-height: 100vh;
+    padding: 8rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .contact-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+
+  .contact-content {
+    padding: 3rem;
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: var(--quantum-white);
+    opacity: 0.8;
+    margin-bottom: 3rem;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--quantum-white);
+    opacity: 0.8;
+  }
+
+  .form-input {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--quantum-white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--quantum-blue);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .submit-btn {
+    position: relative;
+    padding: 1rem 2rem;
+    background: var(--cta-primary);
+    border: none;
+    border-radius: 8px;
+    color: var(--quantum-white);
+    font-size: 1rem;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    background: var(--cta-hover);
+  }
+
+  .btn-particles {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .submit-btn:hover .btn-particles {
+    opacity: 1;
+  }
+
+  .contact-info {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .info-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .info-section p {
+    color: var(--quantum-white);
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .contact-container {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-page {
+      padding: 6rem 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+    }
+  }
+</style>

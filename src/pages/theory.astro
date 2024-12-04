@@ -1,0 +1,222 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Théorie | Art Quantique">
+  <main class="theory-page">
+    <header class="theory-header glass-card">
+      <h1>Ma Vision de l'Art Quantique</h1>
+      <p class="subtitle">Une fusion unique entre science et art</p>
+    </header>
+
+    <div class="theory-content">
+      <section class="theory-section glass-card">
+        <h2>Mon Approche</h2>
+        <p>
+          Mon art n'est pas abstrait, mais suggestif vers le figuratif. Je cherche à explorer le monde invisible qui nous compose et nous anime. Ma technique va au-delà du dripping traditionnel - c'est une projection dynamique en mouvement qui capture l'essence même des particules quantiques.
+        </p>
+        <p>
+          Depuis 2003, j'ai développé mes théories des particules élémentaires, fusionnant précision scientifique et expression artistique. Je suis fier d'être considéré comme l'un des pionniers de l'art quantique, créant des œuvres qui sont une ode visuelle aux composants essentiels de notre univers.
+        </p>
+      </section>
+
+      <section class="theory-section glass-card">
+        <h2>Le Language des Particules</h2>
+        <div class="particle-grid">
+          <div class="particle-card">
+            <div class="particle-color" style="--particle-color: var(--quantum-black)"></div>
+            <h3>Particule Antagoniste</h3>
+            <p>Le noir représente la force fondamentale, liant les extrêmes de l'espace-temps.</p>
+          </div>
+          <div class="particle-card">
+            <div class="particle-color" style="--particle-color: var(--quantum-blue)"></div>
+            <h3>Électron</h3>
+            <p>Le bleu symbolise l'énergie pure et le mouvement constant.</p>
+          </div>
+          <div class="particle-card">
+            <div class="particle-color" style="--particle-color: var(--quantum-red)"></div>
+            <h3>Positron</h3>
+            <p>Le rouge incarne la conscience et la mécanique cognitive.</p>
+          </div>
+          <div class="particle-card">
+            <div class="particle-color" style="--particle-color: var(--quantum-yellow)"></div>
+            <h3>Photon</h3>
+            <p>Le jaune représente la lumière et l'interaction électromagnétique.</p>
+          </div>
+          <div class="particle-card">
+            <div class="particle-color" style="--particle-color: var(--quantum-white)"></div>
+            <h3>Neutrino</h3>
+            <p>Le blanc symbolise la mémoire et la connexion au vivant.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="theory-section glass-card">
+        <h2>Au-delà de la Toile</h2>
+        <p>
+          Mon exploration ne se limite pas à la peinture. Dans les années 80, j'ai été pionnier dans l'incorporation du carbone dans la sculpture et la mode. J'utilise une variété de matériaux uniques, incluant des éléments minéraux, végétaux et marins, pour créer des œuvres qui transcendent les médiums traditionnels.
+        </p>
+        <p>
+          Ma dernière création, le Triskel Bell (brevetée), représente l'apogée de mes recherches, démontrant la validité de mes théories à travers ses multiples applications. C'est ainsi que l'art quantique continue d'évoluer et de s'éveiller.
+        </p>
+      </section>
+
+      <section class="theory-section glass-card">
+        <h2>L'Origine de la Vie</h2>
+        <p>
+          Mes recherches m'ont conduit à une découverte fascinante : une équation géométrique fondamentale, dérivée de l'hydrogène de l'univers primitif, pourrait être la clé de l'origine de la vie. Cette formule explique non seulement l'émergence de la vie, mais aussi son développement et sa diversité.
+        </p>
+        <p>
+          Dans mon récent ouvrage "EVQ : Notre cerveau est un univers quantique", je partage mon parcours depuis l'âge de 7 ans, mon expérience de mort imminente, et ma perspective scientifique unique sur la conscience et la vie elle-même.
+        </p>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .theory-page {
+    min-height: 100vh;
+    padding: 8rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .theory-header {
+    text-align: center;
+    padding: 3rem;
+    margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInDown 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes fadeInDown {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: var(--quantum-white);
+    opacity: 0.8;
+  }
+
+  .theory-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .theory-section {
+    padding: 3rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .theory-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  p {
+    color: var(--quantum-white);
+    opacity: 0.8;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .particle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .particle-card {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  .particle-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .particle-color {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--particle-color);
+    margin: 0 auto 1rem;
+    box-shadow: 0 0 20px var(--particle-color);
+  }
+
+  .particle-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .particle-card p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    .theory-page {
+      padding: 6rem 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    .theory-section {
+      padding: 2rem;
+    }
+  }
+</style>
+
+<script>
+  function handleScroll() {
+    const sections = document.querySelectorAll('.theory-section');
+    
+    sections.forEach(section => {
+      const rect = section.getBoundingClientRect();
+      const isVisible = rect.top <= window.innerHeight * 0.8;
+      
+      if (isVisible) {
+        section.classList.add('visible');
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    handleScroll();
+    window.addEventListener('scroll', handleScroll);
+  });
+</script>

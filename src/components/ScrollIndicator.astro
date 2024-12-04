@@ -1,0 +1,56 @@
+<div class="scroll-indicator">
+  <div class="scroll-dot active"></div>
+  <div class="scroll-dot"></div>
+  <div class="scroll-dot"></div>
+  <div class="scroll-dot"></div>
+</div>
+
+<style>
+  .scroll-indicator {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 100;
+  }
+
+  .scroll-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--quantum-white);
+    opacity: 0.3;
+    transition: all 0.3s ease;
+  }
+
+  .scroll-dot.active {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+</style>
+
+<script>
+  function updateScrollIndicator() {
+    const sections = document.querySelectorAll('section');
+    const dots = document.querySelectorAll('.scroll-dot');
+    
+    const scrollPosition = window.scrollY + window.innerHeight / 2;
+    
+    sections.forEach((section, index) => {
+      const sectionTop = section.offsetTop;
+      const sectionBottom = sectionTop + section.offsetHeight;
+      
+      if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+        dots.forEach(dot => dot.classList.remove('active'));
+        dots[index].classList.add('active');
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('scroll', updateScrollIndicator);
+  });
+</script>

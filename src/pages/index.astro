@@ -1,0 +1,191 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import ArtworkCard from '../components/ArtworkCard.astro';
+import TheoryCard from '../components/TheoryCard.astro';
+import CallToAction from '../components/CallToAction.astro';
+import BottomCTA from '../components/BottomCTA.astro';
+import { artworks } from '../data/artworks';
+import { theories } from '../data/theories';
+---
+
+<Layout title="Art Quantique | Servant Ermes">
+  <main>
+    <Hero />
+    
+    <section id="about" class="glass-card">
+      <div class="about-content">
+        <h2>L'Art des Particules</h2>
+        <p>Servant Ermes transcende les frontières entre physique quantique et expression artistique. Chaque œuvre est une exploration des quatre forces fondamentales, représentées par les particules élémentaires : rouge pour l'interaction forte, bleue pour l'interaction faible, jaune pour l'interaction électromagnétique, et blanc pour la gravité.</p>
+        <div class="cta-buttons">
+          <CallToAction href="/contact">Me Contacter</CallToAction>
+          <CallToAction href="/theory" variant="secondary">En Savoir Plus</CallToAction>
+        </div>
+      </div>
+    </section>
+
+    <section id="collections">
+      <div class="section-header">
+        <h2>Collections</h2>
+        <a href="/collections" class="see-all-link">
+          Voir Toutes les Collections
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+      <div class="gallery">
+        {artworks.slice(0, 3).map(artwork => (
+          <ArtworkCard {...artwork} />
+        ))}
+      </div>
+    </section>
+
+    <section id="theory" class="theory glass-card">
+      <div class="section-header">
+        <h2>Théorie Quantique</h2>
+        <a href="/theory" class="see-all-link">
+          Explorer la Théorie
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+      <div class="theory-grid">
+        {theories.map(theory => (
+          <TheoryCard {...theory} />
+        ))}
+      </div>
+    </section>
+
+    <BottomCTA />
+
+    <footer>
+      <p>© 2024 Art Quantique - Servant Ermes</p>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  main {
+    position: relative;
+    z-index: 1;
+  }
+
+  .about-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  h2 {
+    font-size: 3rem;
+    font-weight: 300;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .see-all-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--quantum-white);
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+  }
+
+  .see-all-link:hover {
+    opacity: 1;
+    transform: translateX(5px);
+    color: var(--quantum-blue);
+  }
+
+  .see-all-link svg {
+    transition: transform 0.3s ease;
+  }
+
+  .see-all-link:hover svg {
+    transform: translateX(5px);
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .theory {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    margin-top: 4rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .theory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    justify-content: center;
+  }
+
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #000;
+    color: var(--quantum-white);
+    opacity: 0.8;
+    position: relative;
+    z-index: 1;
+  }
+
+  section {
+    margin-top: 4rem;
+    padding: 4rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  #about {
+    margin-top: 0;
+  }
+
+  @media (max-width: 768px) {
+    .section-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+    }
+
+    .gallery {
+      grid-template-columns: 1fr;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+    }
+  }
+</style>

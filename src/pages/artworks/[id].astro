@@ -1,0 +1,236 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { artworks } from '../../data/artworks';
+import { shouldShowScrollFeatures } from '../../utils/scroll';
+
+export function getStaticPaths() {
+  return artworks.map(artwork => ({
+    params: { id: artwork.id },
+    props: { artwork },
+  }));
+}
+
+const { artwork } = Astro.props;
+const showScrollFeatures = shouldShowScrollFeatures(Astro.url.pathname);
+
+if (!artwork) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout 
+  title={`${artwork.title} | Art Quantique`}
+  description={artwork.description}
+  image={artwork.image}
+>
+  <main class="artwork-detail">
+    <div class="artwork-container">
+      <div class="artwork-image-container glass-card">
+        <img 
+          src={artwork.image} 
+          alt={artwork.title}
+          class="artwork-image"
+          width="800"
+          height="800"
+          loading="eager"
+        />
+      </div>
+      
+      <div class="artwork-info glass-card">
+        <h1>{artwork.title}</h1>
+        <p class="description">{artwork.description}</p>
+        
+        <div class="artwork-meta">
+          <div class="meta-item">
+            <h3>Année</h3>
+            <p>{artwork.year}</p>
+          </div>
+          <div class="meta-item">
+            <h3>Dimensions</h3>
+            <p>{artwork.dimensions}</p>
+          </div>
+          <div class="meta-item">
+            <h3>Technique</h3>
+            <p>{artwork.technique}</p>
+          </div>
+        </div>
+        
+        <div class="artwork-details">
+          <h3>À propos de l'œuvre</h3>
+          <p>{artwork.details}</p>
+        </div>
+        
+        <nav class="artwork-navigation">
+          <a href="/artworks" class="back-button">
+            ← Retour aux œuvres
+          </a>
+        </nav>
+      </div>
+    </div>
+    
+    <div class="quantum-particles"></div>
+  </main>
+</Layout>
+
+<style>
+  .artwork-detail {
+    min-height: 100vh;
+    padding: 8rem 2rem;
+    position: relative;
+  }
+
+  .artwork-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .artwork-image-container {
+    position: sticky;
+    top: 8rem;
+    height: fit-content;
+  }
+
+  .artwork-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .artwork-image:hover {
+    transform: scale(1.02);
+  }
+
+  .artwork-info {
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .description {
+    font-size: 1.2rem;
+    color: var(--quantum-white);
+    opacity: 0.8;
+    margin-bottom: 2rem;
+  }
+
+  .artwork-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .meta-item h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    color: var(--quantum-white);
+    opacity: 0.6;
+  }
+
+  .meta-item p {
+    font-size: 1.1rem;
+  }
+
+  .artwork-details {
+    margin: 2rem 0;
+  }
+
+  .artwork-details h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .artwork-details p {
+    line-height: 1.8;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    color: var(--quantum-white);
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+  }
+
+  .back-button:hover {
+    color: var(--quantum-blue);
+    transform: translateX(-5px);
+  }
+
+  .quantum-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+      rgba(var(--quantum-blue-rgb), 0.1) 0%,
+      transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .artwork-container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .artwork-image-container {
+      position: relative;
+      top: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .artwork-meta {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    .artwork-detail {
+      padding: 6rem 1rem;
+    }
+  }
+</style>
+
+<script>
+  const particles = document.querySelector('.quantum-particles');
+  
+  if (particles) {
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      
+      particles.style.setProperty('--x', `${x}%`);
+      particles.style.setProperty('--y', `${y}%`);
+    });
+  }
+</script>

@@ -1,0 +1,103 @@
+---
+interface Props {
+  year: string;
+  index: number;
+}
+
+const { year, index } = Astro.props;
+---
+
+<div class="timeline-indicator" data-index={index}>
+  <div class="timeline-line">
+    <div class="timeline-progress"></div>
+  </div>
+  <div class="timeline-dot">
+    <div class="dot-pulse"></div>
+  </div>
+  <div class="timeline-date">{year}</div>
+</div>
+
+<style>
+  .timeline-indicator {
+    position: absolute;
+    left: -60px;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .timeline-indicator.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .timeline-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--glass-border);
+    overflow: hidden;
+  }
+
+  .timeline-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: var(--quantum-blue);
+    transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--quantum-blue);
+    margin-top: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .dot-pulse {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: var(--quantum-blue);
+    opacity: 0.3;
+    transform: scale(0);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .timeline-date {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    padding: 1rem 0;
+    color: var(--quantum-white);
+    opacity: 0.6;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+
+  .timeline-indicator:hover .timeline-date {
+    color: var(--quantum-blue);
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+</style>

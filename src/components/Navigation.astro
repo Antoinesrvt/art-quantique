@@ -1,0 +1,89 @@
+---
+const navItems = [
+  { href: "/", text: "Accueil" },
+  { href: "/collections", text: "Collections" },
+  { href: "/artworks", text: "Œuvres" },
+  { href: "/theory", text: "Théorie" },
+  { href: "/contact", text: "Contact" }
+];
+---
+
+<nav>
+  <ul>
+    {navItems.map(item => (
+      <li>
+        <a 
+          href={item.href}
+          class={Astro.url.pathname === item.href ? 'active' : ''}
+          aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
+        >
+          {item.text}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  ul {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    list-style: none;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  a {
+    color: var(--quantum-white);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    position: relative;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+  }
+
+  a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--quantum-blue);
+    transition: width 0.3s ease;
+  }
+
+  a:hover::after,
+  a.active::after {
+    width: 100%;
+  }
+
+  a.active {
+    color: var(--quantum-blue);
+  }
+
+  @media (max-width: 768px) {
+    ul {
+      gap: 1.5rem;
+      padding: 0 1rem;
+    }
+
+    a {
+      font-size: 0.8rem;
+    }
+  }
+</style>
