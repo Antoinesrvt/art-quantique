@@ -1,11 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import ArtworkCard from '../components/ArtworkCard.astro';
+import CollectionCard from '../components/CollectionCard.astro';
 import TheoryCard from '../components/TheoryCard.astro';
 import CallToAction from '../components/CallToAction.astro';
 import BottomCTA from '../components/BottomCTA.astro';
-import { artworks } from '../data/artworks';
+import { collections } from '../data/collections';
 import { theories } from '../data/theories';
 ---
 
@@ -36,8 +36,8 @@ import { theories } from '../data/theories';
         </a>
       </div>
       <div class="gallery">
-        {artworks.slice(0, 3).map(artwork => (
-          <ArtworkCard {...artwork} />
+        {collections.map(collection => (
+          <CollectionCard {...collection} />
         ))}
       </div>
     </section>
@@ -122,9 +122,21 @@ import { theories } from '../data/theories';
 
   .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
     margin-top: 3rem;
+  }
+
+  @media (max-width: 1024px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .gallery {
+      grid-template-columns: 1fr;
+    }
   }
 
   .theory {
@@ -167,25 +179,5 @@ import { theories } from '../data/theories';
 
   #about {
     margin-top: 0;
-  }
-
-  @media (max-width: 768px) {
-    .section-header {
-      flex-direction: column;
-      gap: 1rem;
-      align-items: flex-start;
-    }
-
-    .cta-buttons {
-      flex-direction: column;
-    }
-
-    .gallery {
-      grid-template-columns: 1fr;
-    }
-
-    h2 {
-      font-size: 2.5rem;
-    }
   }
 </style>

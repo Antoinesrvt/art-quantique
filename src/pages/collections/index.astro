@@ -1,23 +1,15 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import TimelineIndicator from "../../components/TimelineIndicator.astro";
+import CallToAction from "../../components/CallToAction.astro";
+import { collections } from "../../data/collections";
 import { artworks } from "../../data/artworks";
 
-// Group artworks by collection theme and sort by latest first
-const collections = Object.entries({
-  Superposition: Array.isArray(artworks)
-    ? artworks.filter((a) => a.id.includes("superposition"))
-    : [],
-  Intrication: Array.isArray(artworks)
-    ? artworks.filter((a) => a.id.includes("intrication"))
-    : [],
-  Dualité: Array.isArray(artworks)
-    ? artworks.filter((a) => a.id.includes("dualite"))
-    : [],
-  "État Fondamental": Array.isArray(artworks)
-    ? artworks.filter((a) => a.id.includes("etat-fondamental"))
-    : [],
-}).reverse();
+// Group artworks by collection
+const collectionArtworks = collections.map(collection => ({
+  ...collection,
+  works: artworks.filter(a => a.collectionId === collection.id)
+}));
 ---
 
 <Layout title="Collections | Art Quantique">
@@ -31,24 +23,36 @@ const collections = Object.entries({
 
     <div class="collections-timeline">
       {
-        collections.map(([name, works], index) => (
+        collectionArtworks.map(({ name, works, description, id }, index) => (
           <section class="collection-section glass-card" data-index={index}>
             <TimelineIndicator year={works[0]?.year} index={index} />
 
             <div class="collection-content">
               <div class="collection-info">
                 <h2>{name}</h2>
-                <p class="collection-description">{works[0]?.details}</p>
+                <p class="collection-description">{description}</p>
+                <CallToAction
+                  href={`/collections/${id}`}
+                  variant="secondary"
+                >
+                  Explorer la Collection
+                </CallToAction>
               </div>
 
               <div class="collection-preview">
-                {works.map((artwork) => (
+                {works.slice(0, 2).map((artwork) => (
                   <a
                     href={`/collections/${artwork.id}`}
                     class="artwork-preview"
                   >
                     <div class="preview-image-container">
-                      <img src={artwork.image} alt={artwork.title} />
+                      <img
+                        src={artwork.image}
+                        alt={artwork.title}
+                        width="400"
+                        height="400"
+                        loading="lazy"
+                      />
                       <div class="preview-overlay">
                         <h3>{artwork.title}</h3>
                         <p>{artwork.description}</p>
@@ -56,6 +60,17 @@ const collections = Object.entries({
                     </div>
                   </a>
                 ))}
+                {works.length > 2 && (
+                  <a
+                    href={`/collections/${id}`}
+                    class="see-more glass-card"
+                  >
+                    <div class="see-more-content">
+                      <span class="count">+{works.length - 2}</span>
+                      <span class="text">Voir Plus</span>
+                    </div>
+                  </a>
+                )}
               </div>
             </div>
           </section>
@@ -132,23 +147,6 @@ const collections = Object.entries({
     transform: translateX(0);
   }
 
-  .collection-section::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      45deg,
-      rgba(var(--quantum-blue-rgb), 0.1),
-      transparent
-    );
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-
-  .collection-section:hover::before {
-    opacity: 1;
-  }
-
   .collection-content {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -189,7 +187,7 @@ const collections = Object.entries({
 
   .collection-preview {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     opacity: 0;
     transform: translateY(20px);
@@ -267,20 +265,66 @@ const collections = Object.entries({
     opacity: 0.8;
   }
 
+  .see-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .see-more:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px);
+  }
+
+  .see-more-content {
+    text-align: center;
+    color: var(--quantum-white);
+  }
+
+  .count {
+    display: block;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .text {
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+
   @media (max-width: 1024px) {
     .collection-content {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
+
+    .collection-preview {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (max-width: 768px) {
-    .collection-preview {
-      grid-template-columns: 1fr;
-    }
-
     .collections-page {
       padding: 6rem 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    .collection-preview {
+      grid-template-columns: 1fr;
     }
   }
 </style>
@@ -298,7 +342,6 @@ const collections = Object.entries({
         section.classList.add("visible");
         timelineIndicators[index].classList.add("visible");
 
-        // Update timeline progress
         const progress =
           timelineIndicators[index].querySelector(".timeline-progress");
         const percentVisible = Math.min(
@@ -310,9 +353,8 @@ const collections = Object.entries({
     });
   }
 
-  // Initialize
   document.addEventListener("DOMContentLoaded", () => {
-    handleScroll(); // Initial check
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
   });
 </script>

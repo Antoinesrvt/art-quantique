@@ -1,0 +1,21 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+}
+
+const { src, alt, width = 800, height = 800 } = Astro.props;
+---
+
+<Image 
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  format="webp"
+  quality={80}
+/> 

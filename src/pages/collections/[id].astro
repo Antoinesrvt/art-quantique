@@ -2,69 +2,49 @@
 import Layout from '../../layouts/Layout.astro';
 import ArtworkCard from '../../components/ArtworkCard.astro';
 import CallToAction from '../../components/CallToAction.astro';
+import { collections } from '../../data/collections';
 import { artworks } from '../../data/artworks';
 
 export function getStaticPaths() {
-  const collections = [...new Set(artworks.map(a => a.id.split('-')[0]))];
-  
-  return collections.map(collection => {
-    const collectionArtworks = artworks.filter(a => a.id.startsWith(collection));
-    const firstArtwork = collectionArtworks[0];
-    
-    return {
-      params: { id: collection },
-      props: { 
-        artworks: collectionArtworks,
-        title: getCollectionTitle(collection),
-        description: getCollectionDescription(collection),
-        coverImage: firstArtwork?.image
-      }
-    };
-  });
-}
-
-function getCollectionTitle(id: string) {
-  const titles = {
-    'superposition': 'Collection Superposition',
-    'intrication': 'Collection Intrication',
-    'dualite': 'Collection Dualité',
-    'etat': 'Collection État Fondamental'
-  };
-  return titles[id] || 'Collection';
-}
-
-function getCollectionDescription(id: string) {
-  const descriptions = {
-    'superposition': 'Une exploration visuelle des états quantiques superposés, où les particules existent simultanément dans plusieurs états.',
-    'intrication': 'Une représentation de la connexion mystérieuse entre les particules, transcendant l\'espace et le temps.',
-    'dualite': 'L\'expression de la nature double de la matière, entre ondes et particules.',
-    'etat': 'La recherche de l\'équilibre parfait dans l\'état d\'énergie le plus bas.'
-  };
-  return descriptions[id] || '';
+  return collections.map(collection => ({
+    params: { id: collection.id }
+  }));
 }
 
 const { id } = Astro.params;
-const { artworks: collectionArtworks = [], title, description, coverImage } = Astro.props;
+// Find the correct collection based on URL id
+const collection = collections.find(c => c.id === id);
+// Get artworks for this collection
+const collectionArtworks = artworks.filter(a => a.collectionId === id);
+
+// Handle case where collection is not found
+if (!collection) {
+  return Astro.redirect('/404');
+}
 ---
 
-<Layout title={`${title} | Art Quantique`} description={description} image={coverImage}>
+<Layout 
+  title={`${collection.name} | Art Quantique`} 
+  description={collection.description}
+  image={collection.coverImage}
+>
   <main class="collection-detail">
     <header class="collection-header glass-card">
       <div class="header-content">
-        <h1>{title}</h1>
-        <p class="description">{description}</p>
+        <h1>{collection.name}</h1>
+        <p class="description">{collection.longDescription}</p>
         <div class="collection-meta">
           <div class="meta-item">
             <span class="label">Œuvres</span>
-            <span class="value">{collectionArtworks?.length || 0}</span>
+            <span class="value">{collectionArtworks.length}</span>
           </div>
           <div class="meta-item">
             <span class="label">Année</span>
-            <span class="value">{collectionArtworks?.[0]?.year || '-'}</span>
+            <span class="value">{collection.year}</span>
           </div>
         </div>
       </div>
-      <div class="header-background" style={`--bg-image: url(${coverImage})`}></div>
+      <div class="header-background" style={`--bg-image: url(${collection.coverImage})`}></div>
     </header>
 
     <section class="collection-artworks">

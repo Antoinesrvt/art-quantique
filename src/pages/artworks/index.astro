@@ -1,13 +1,35 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { artworks } from '../../data/artworks';
+import Layout from "../../layouts/Layout.astro";
+import { artworks, type ArtworkSize, type Artwork } from "../../data/artworks";
+import { collections, type Collection } from "../../data/collections";
 
-const collections = [...new Set(artworks.map(a => a.id.split('-')[0]))];
-const colors = ['red', 'blue', 'yellow', 'white'];
+// Type-safe filter options
+const availableSizes: ArtworkSize[] = [
+  "100x50",
+  "100x60",
+  "100x73",
+  "61x50",
+  "60x60",
+  "80x40",
+  "80x80",
+  "81x65",
+];
+const availableColors = ["red", "blue", "yellow", "white"] as const;
+type ColorOption = (typeof availableColors)[number];
 
-// Get collection filter from URL if present
+// Get initial filters from URL
 const urlParams = new URL(Astro.request.url).searchParams;
-const initialCollection = urlParams.get('collection');
+const initialCollection = urlParams.get("collection");
+const initialSize = urlParams.get("size") as ArtworkSize | null;
+const initialColor = urlParams.get("color") as ColorOption | null;
+
+// Get collection names for display
+const collectionNames = new Map(collections.map((c) => [c.id, c.name]));
+
+// Format size for display
+function formatSize(size: ArtworkSize): string {
+  return `${size} cm`;
+}
 ---
 
 <Layout title="Œuvres | Art Quantique">
@@ -20,72 +42,156 @@ const initialCollection = urlParams.get('collection');
     <div class="filters-container glass-card">
       <div class="search-container">
         <div class="search-wrapper">
-          <input 
-            type="text" 
-            id="search" 
+          <input
+            type="text"
+            id="search"
             placeholder="Rechercher une œuvre..."
             class="search-input"
+            aria-label="Rechercher une œuvre"
           />
-          <div class="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="search-icon" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </div>
         </div>
       </div>
-      
+
       <div class="filter-groups">
         <div class="filter-group">
           <h3>Collection</h3>
-          <div class="filter-options">
-            {collections.map(collection => (
-              <button 
-                class={`filter-btn ${collection === initialCollection ? 'active' : ''}`} 
-                data-filter="collection" 
-                data-value={collection}
-              >
-                {collection}
-              </button>
-            ))}
+          <div
+            class="filter-options"
+            role="group"
+            aria-label="Filtrer par collection"
+          >
+            {
+              collections.map((collection) => (
+                <button
+                  class={`filter-btn ${collection.id === initialCollection ? "active" : ""}`}
+                  data-filter="collection"
+                  data-value={collection.id}
+                  aria-pressed={collection.id === initialCollection}
+                >
+                  {collection.name}
+                </button>
+              ))
+            }
           </div>
         </div>
-        
+
+        <div class="filter-group dimensions-group">
+          <h3>Dimensions</h3>
+          <div class="select-wrapper">
+            <select
+              id="size-select"
+              class="size-select"
+              aria-label="Filtrer par dimensions"
+            >
+              <option value="">Toutes les dimensions</option>
+              {availableSizes.map(size => (
+                <option 
+                  value={size} 
+                  selected={size === initialSize}
+                >
+                  {size} cm
+                </option>
+              ))}
+            </select>
+            <div class="select-arrow" aria-hidden="true">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2" 
+                stroke-linecap="round" 
+                stroke-linejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
         <div class="filter-group">
           <h3>Couleur dominante</h3>
-          <div class="filter-options">
-            {colors.map(color => (
-              <button 
-                class="filter-btn color-btn"
-                data-filter="color" 
-                data-value={color}
-                style={`--color: var(--quantum-${color})`}
-              >
-                <span class="color-dot"></span>
-                {color}
-              </button>
-            ))}
+          <div
+            class="filter-options"
+            role="group"
+            aria-label="Filtrer par couleur"
+          >
+            {
+              availableColors.map((color) => (
+                <button
+                  class={`filter-btn color-btn ${color === initialColor ? "active" : ""}`}
+                  data-filter="color"
+                  data-value={color}
+                  style={`--color: var(--quantum-${color})`}
+                  aria-pressed={color === initialColor}
+                >
+                  <span class="color-dot" aria-hidden="true" />
+                  {color}
+                </button>
+              ))
+            }
           </div>
         </div>
+
       </div>
     </div>
 
-    <div class="artworks-grid" id="artworks-grid">
-      {artworks.map(artwork => (
-        <a href={`/artworks/${artwork.id}`} class="artwork-card glass-card">
-          <div class="artwork-image">
-            <img src={artwork.image} alt={artwork.title} />
-          </div>
-          <div class="artwork-info">
-            <h2>{artwork.title}</h2>
-            <p>{artwork.description}</p>
-            <div class="artwork-meta">
-              <span>{artwork.year}</span>
-              <span>{artwork.dimensions}</span>
+    <div class="artworks-grid" id="artworks-grid" role="list">
+      {
+        artworks.map((artwork) => (
+          <a
+            href={`/artworks/${artwork.id}`}
+            class="artwork-card glass-card"
+            data-size={artwork.size}
+            data-collection={artwork.collectionId}
+            role="listitem"
+          >
+            <div class="artwork-image">
+              <img
+                src={artwork.image}
+                alt={artwork.title}
+                loading="lazy"
+                width="400"
+                height="400"
+              />
             </div>
-          </div>
-        </a>
-      ))}
+            <div class="artwork-info">
+              <h2>{artwork.title}</h2>
+              <p>{artwork.description}</p>
+              <div class="artwork-meta">
+                <span>{artwork.year}</span>
+                <span>{artwork.size} cm</span>
+                {/* <span class="collection-tag">{collectionNames.get(artwork.collectionId)}</span> */}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <div id="no-results" class="no-results hidden">
+      <p>Aucune œuvre ne correspond à vos critères de recherche</p>
+      <button id="reset-filters" class="reset-btn"
+        >Réinitialiser les filtres</button
+      >
     </div>
   </main>
 </Layout>
@@ -107,7 +213,11 @@ const initialCollection = urlParams.get('collection');
   .artworks-header h1 {
     font-size: 3.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
@@ -161,10 +271,16 @@ const initialCollection = urlParams.get('collection');
   }
 
   .filter-groups {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
     margin-top: 2rem;
+  }
+
+  .filter-group {
+    flex: 1;
+    min-width: 200px;
+    justify-content: center;
   }
 
   .filter-group h3 {
@@ -253,7 +369,11 @@ const initialCollection = urlParams.get('collection');
   .artwork-info h2 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
@@ -272,78 +392,372 @@ const initialCollection = urlParams.get('collection');
     opacity: 0.6;
   }
 
+  .size-btn {
+    font-family: monospace;
+    letter-spacing: -0.5px;
+  }
+
+  .active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    min-height: 2rem;
+  }
+
+  .filter-tag {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .filter-tag button {
+    background: none;
+    border: none;
+    color: var(--quantum-white);
+    opacity: 0.7;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: opacity 0.3s ease;
+  }
+
+  .filter-tag button:hover {
+    opacity: 1;
+  }
+
+  .collection-tag {
+    background: rgba(var(--quantum-blue-rgb), 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+  }
+
+  .no-results.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reset-btn {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--quantum-blue);
+    border: none;
+    border-radius: 8px;
+    color: var(--quantum-white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .reset-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--quantum-blue-rgb), 0.3);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .artworks-page {
       padding: 6rem 1rem;
     }
 
     .filter-groups {
-      grid-template-columns: 1fr;
+      flex-direction: column;
     }
 
     .artworks-grid {
       grid-template-columns: 1fr;
     }
+
+    .filter-options {
+      max-height: 200px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--quantum-blue) transparent;
+    }
+
+    .filter-options::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .filter-options::-webkit-scrollbar-thumb {
+      background-color: var(--quantum-blue);
+      border-radius: 3px;
+    }
+  }
+
+  .dimensions-group {
+    position: relative;
+  }
+
+  .select-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .size-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-right: 2.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--quantum-white);
+    font-size: 0.9rem;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.3s ease;
+  }
+
+  .size-select:focus {
+    outline: none;
+    border-color: var(--quantum-blue);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .size-select option {
+    background: #1a1a1a;
+    color: var(--quantum-white);
+    padding: 0.5rem;
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--quantum-white);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+
+  .size-select:hover + .select-arrow,
+  .size-select:focus + .select-arrow {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .select-wrapper {
+      max-width: 100%;
+    }
   }
 </style>
 
 <script>
-  let activeFilters = {
+  interface Filters {
+    collection: string | null;
+    color: string | null;
+    size: string | null;
+    search: string;
+  }
+
+  const activeFilters: Filters = {
     collection: null,
     color: null,
-    search: ''
+    size: null,
+    search: "",
   };
 
-  function updateArtworks() {
-    const artworks = document.querySelectorAll('.artwork-card');
-    
-    artworks.forEach(artwork => {
-      const title = artwork.querySelector('h2').textContent.toLowerCase();
-      const description = artwork.querySelector('p').textContent.toLowerCase();
-      const id = artwork.getAttribute('href').split('/').pop();
-      
-      const matchesSearch = !activeFilters.search || 
-        title.includes(activeFilters.search.toLowerCase()) ||
-        description.includes(activeFilters.search.toLowerCase());
-        
-      const matchesCollection = !activeFilters.collection ||
-        id.includes(activeFilters.collection);
-        
-      const matchesColor = !activeFilters.color ||
-        artwork.querySelector('img').getAttribute('src').includes(activeFilters.color);
-      
-      artwork.style.display = matchesSearch && matchesCollection && matchesColor ? 'block' : 'none';
-      artwork.style.opacity = matchesSearch && matchesCollection && matchesColor ? '1' : '0';
+  function updateActiveFiltersDisplay() {
+    const container = document.getElementById("active-filters");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    Object.entries(activeFilters).forEach(([key, value]) => {
+      if (value) {
+        const tag = document.createElement("div");
+        tag.className = "filter-tag";
+        tag.innerHTML = `
+          ${value}
+          <button aria-label="Supprimer le filtre ${value}">
+            <svg width="12" height="12" viewBox="0 0 12 12">
+              <path d="M1 1L11 11M1 11L11 1" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        `;
+
+        tag.querySelector("button")?.addEventListener("click", () => {
+          const btn = document.querySelector(
+            `[data-filter="${key}"][data-value="${value}"]`
+          );
+          if (btn) (btn as HTMLButtonElement).click();
+        });
+
+        container.appendChild(tag);
+      }
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('search');
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    
-    searchInput.addEventListener('input', (e) => {
-      activeFilters.search = e.target.value;
+  function updateURL() {
+    const params = new URLSearchParams();
+    Object.entries(activeFilters).forEach(([key, value]) => {
+      if (value) params.set(key, value);
+    });
+
+    const newURL = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
+    window.history.pushState({}, "", newURL);
+  }
+
+  function updateArtworks() {
+    const artworks = document.querySelectorAll<HTMLElement>(".artwork-card");
+    let visibleCount = 0;
+
+    artworks.forEach((artwork) => {
+      const title =
+        artwork.querySelector("h2")?.textContent?.toLowerCase() || "";
+      const description =
+        artwork.querySelector("p")?.textContent?.toLowerCase() || "";
+      const collection = artwork.dataset.collection;
+      const size = artwork.dataset.size;
+
+      const matchesSearch =
+        !activeFilters.search ||
+        title.includes(activeFilters.search.toLowerCase()) ||
+        description.includes(activeFilters.search.toLowerCase());
+
+      const matchesCollection =
+        !activeFilters.collection || collection === activeFilters.collection;
+
+      const matchesColor =
+        !activeFilters.color ||
+        artwork
+          .querySelector("img")
+          ?.getAttribute("src")
+          ?.includes(activeFilters.color);
+
+      const matchesSize = !activeFilters.size || size === activeFilters.size;
+
+      const shouldShow =
+        matchesSearch && matchesCollection && matchesColor && matchesSize;
+
+      artwork.style.display = shouldShow ? "block" : "none";
+      artwork.style.opacity = shouldShow ? "1" : "0";
+
+      if (shouldShow) visibleCount++;
+    });
+
+    const noResults = document.getElementById("no-results");
+    if (noResults) {
+      if (visibleCount === 0) {
+        noResults.classList.remove("hidden");
+        setTimeout(() => noResults.classList.add("visible"), 10);
+      } else {
+        noResults.classList.remove("visible");
+        setTimeout(() => noResults.classList.add("hidden"), 300);
+      }
+    }
+
+    updateActiveFiltersDisplay();
+    updateURL();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search") as HTMLInputElement;
+    const filterButtons =
+      document.querySelectorAll<HTMLButtonElement>(".filter-btn");
+    const sizeSelect = document.getElementById("size-select") as HTMLSelectElement;
+    const resetButton = document.getElementById("reset-filters");
+
+    sizeSelect?.addEventListener("change", (e) => {
+      const value = (e.target as HTMLSelectElement).value;
+      activeFilters.size = value || null;
       updateArtworks();
     });
-    
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const filter = btn.dataset.filter;
+
+    searchInput?.addEventListener("input", (e) => {
+      activeFilters.search = (e.target as HTMLInputElement).value;
+      updateArtworks();
+    });
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const filter = btn.dataset.filter as keyof Filters;
         const value = btn.dataset.value;
-        
+
+        if (!filter || !value) return;
+
         if (activeFilters[filter] === value) {
           activeFilters[filter] = null;
-          btn.classList.remove('active');
+          btn.classList.remove("active");
+          btn.setAttribute("aria-pressed", "false");
         } else {
-          document.querySelectorAll(`[data-filter="${filter}"]`)
-            .forEach(b => b.classList.remove('active'));
-          
+          document
+            .querySelectorAll<HTMLButtonElement>(`[data-filter="${filter}"]`)
+            .forEach((b) => {
+              b.classList.remove("active");
+              b.setAttribute("aria-pressed", "false");
+            });
+
           activeFilters[filter] = value;
-          btn.classList.add('active');
+          btn.classList.add("active");
+          btn.setAttribute("aria-pressed", "true");
         }
-        
+
         updateArtworks();
       });
     });
+
+    resetButton?.addEventListener("click", () => {
+      activeFilters.collection = null;
+      activeFilters.color = null;
+      activeFilters.size = null;
+      activeFilters.search = "";
+      
+      searchInput.value = "";
+      sizeSelect.value = ""; // Reset select
+      filterButtons.forEach(btn => {
+        btn.classList.remove("active");
+        btn.setAttribute("aria-pressed", "false");
+      });
+      
+      updateArtworks();
+    });
+
+    // Initialize with URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.forEach((value, key) => {
+      if (key in activeFilters) {
+        activeFilters[key as keyof Filters] = value;
+        if (key === "size" && sizeSelect) {
+          sizeSelect.value = value;
+        } else {
+          const btn = document.querySelector<HTMLButtonElement>(`[data-filter="${key}"][data-value="${value}"]`);
+          if (btn) {
+            btn.classList.add("active");
+            btn.setAttribute("aria-pressed", "true");
+          }
+        }
+      }
+    });
+    
+    updateArtworks();
   });
 </script>

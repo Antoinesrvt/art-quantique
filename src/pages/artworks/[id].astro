@@ -47,7 +47,7 @@ if (!artwork) {
           </div>
           <div class="meta-item">
             <h3>Dimensions</h3>
-            <p>{artwork.dimensions}</p>
+            <p>{artwork.size}</p>
           </div>
           <div class="meta-item">
             <h3>Technique</h3>
@@ -229,8 +229,8 @@ if (!artwork) {
       const x = (e.clientX / window.innerWidth) * 100;
       const y = (e.clientY / window.innerHeight) * 100;
       
-      particles.style.setProperty('--x', `${x}%`);
-      particles.style.setProperty('--y', `${y}%`);
+      (particles as HTMLElement).style.setProperty('--x', `${x}%`);
+      (particles as HTMLElement).style.setProperty('--y', `${y}%`);
     });
   }
 </script>
