@@ -89,13 +89,13 @@ import Alert from '../components/Alert.astro';
 
       if (response.ok) {
         form.reset();
-        successAlert.show();
+        successAlert.classList.add('show');
       } else {
-        errorAlert.show();
+        errorAlert.classList.add('show');
       }
     } catch (error) {
       console.error('Form submission error:', error);
-      errorAlert.show();
+      errorAlert.classList.add('show');
     }
   });
 </script>

@@ -1,10 +1,11 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { artworks } from '../../data/artworks';
-import { shouldShowScrollFeatures } from '../../utils/scroll';
+export const prerender = true;
+import Layout from "../../layouts/Layout.astro";
+import { artworks } from "../../data/artworks";
+import { shouldShowScrollFeatures } from "../../utils/scroll";
 
 export function getStaticPaths() {
-  return artworks.map(artwork => ({
+  return artworks.map((artwork) => ({
     params: { id: artwork.id },
     props: { artwork },
   }));
@@ -14,11 +15,11 @@ const { artwork } = Astro.props;
 const showScrollFeatures = shouldShowScrollFeatures(Astro.url.pathname);
 
 if (!artwork) {
-  return Astro.redirect('/404');
+  return Astro.redirect("/404");
 }
 ---
 
-<Layout 
+<Layout
   title={`${artwork.title} | Art Quantique`}
   description={artwork.description}
   image={artwork.image}
@@ -26,8 +27,8 @@ if (!artwork) {
   <main class="artwork-detail">
     <div class="artwork-container">
       <div class="artwork-image-container glass-card">
-        <img 
-          src={artwork.image} 
+        <img
+          src={artwork.image}
           alt={artwork.title}
           class="artwork-image"
           width="800"
@@ -35,11 +36,11 @@ if (!artwork) {
           loading="eager"
         />
       </div>
-      
+
       <div class="artwork-info glass-card">
         <h1>{artwork.title}</h1>
         <p class="description">{artwork.description}</p>
-        
+
         <div class="artwork-meta">
           <div class="meta-item">
             <h3>Année</h3>
@@ -54,20 +55,18 @@ if (!artwork) {
             <p>{artwork.technique}</p>
           </div>
         </div>
-        
+
         <div class="artwork-details">
           <h3>À propos de l'œuvre</h3>
           <p>{artwork.details}</p>
         </div>
-        
+
         <nav class="artwork-navigation">
-          <a href="/artworks" class="back-button">
-            ← Retour aux œuvres
-          </a>
+          <a href="/artworks" class="back-button"> ← Retour aux œuvres </a>
         </nav>
       </div>
     </div>
-    
+
     <div class="quantum-particles"></div>
   </main>
 </Layout>
@@ -113,7 +112,11 @@ if (!artwork) {
   h1 {
     font-size: 3rem;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
@@ -155,7 +158,11 @@ if (!artwork) {
   .artwork-details h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
@@ -186,9 +193,11 @@ if (!artwork) {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+    background: radial-gradient(
+      circle at var(--x, 50%) var(--y, 50%),
       rgba(var(--quantum-blue-rgb), 0.1) 0%,
-      transparent 50%);
+      transparent 50%
+    );
     pointer-events: none;
     z-index: 0;
   }
@@ -222,15 +231,15 @@ if (!artwork) {
 </style>
 
 <script>
-  const particles = document.querySelector('.quantum-particles');
-  
+  const particles = document.querySelector(".quantum-particles");
+
   if (particles) {
-    document.addEventListener('mousemove', (e) => {
+    document.addEventListener("mousemove", (e) => {
       const x = (e.clientX / window.innerWidth) * 100;
       const y = (e.clientY / window.innerHeight) * 100;
-      
-      (particles as HTMLElement).style.setProperty('--x', `${x}%`);
-      (particles as HTMLElement).style.setProperty('--y', `${y}%`);
+
+      (particles as HTMLElement).style.setProperty("--x", `${x}%`);
+      (particles as HTMLElement).style.setProperty("--y", `${y}%`);
     });
   }
 </script>

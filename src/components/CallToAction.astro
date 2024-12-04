@@ -104,11 +104,11 @@ const { href, variant = 'primary' } = Astro.props;
     
     button.addEventListener('mousemove', (e) => {
       const rect = button.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      const x = (((e as MouseEvent).clientX - rect.left) / rect.width) * 100;
+      const y = (((e as MouseEvent).clientY - rect.top) / rect.height) * 100;
       
-      particles.style.setProperty('--x', `${x}%`);
-      particles.style.setProperty('--y', `${y}%`);
+      (particles as HTMLElement).style.setProperty('--x', `${x}%`);
+      (particles as HTMLElement).style.setProperty('--y', `${y}%`);
     });
   });
 </script>

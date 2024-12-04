@@ -76,9 +76,9 @@ html.no-scroll {
   nav ul { gap: 1.5rem; }
   .scroll-indicator { display: none; }
 }
-</style>
 
-<script>
+
+/* <script>
   // Intersection Observer for section animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -97,4 +97,4 @@ html.no-scroll {
       observer.observe(section);
     });
   });
-</script>
+</script> */

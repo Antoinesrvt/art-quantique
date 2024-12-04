@@ -1,11 +1,12 @@
 ---
-import '@fontsource/space-grotesk';
-import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
-import ParticleSystem from '../components/ParticleSystem.astro';
-import ScrollIndicator from '../components/ScrollIndicator.astro';
-import { generateSEOMeta } from '../utils/seo';
-import { shouldShowScrollFeatures } from '../utils/scroll';
+import "@fontsource/space-grotesk";
+import "../styles/global.css";
+import Navigation from "../components/Navigation.astro";
+import ParticleSystem from "../components/ParticleSystem.astro";
+import ScrollIndicator from "../components/ScrollIndicator.astro";
+import { generateSEOMeta } from "../utils/seo";
+import { shouldShowScrollFeatures } from "../utils/scroll";
+// import '../scripts/animations.ts';
 
 interface Props {
   title?: string;
@@ -13,10 +14,10 @@ interface Props {
   image?: string;
 }
 
-const { 
+const {
   title = "Art Quantique | Servant Ermes",
   description,
-  image
+  image,
 } = Astro.props;
 
 const meta = generateSEOMeta({ title, description, image });
@@ -24,25 +25,35 @@ const showScrollFeatures = shouldShowScrollFeatures(Astro.url.pathname);
 ---
 
 <!doctype html>
-<html lang="fr" class={!showScrollFeatures ? 'no-scroll' : ''}>
+<html lang="fr" class={!showScrollFeatures ? "no-scroll" : ""}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    
-    {meta.map(({ name, property, content }) => (
-      property ? 
-        <meta property={property} content={content} /> :
-        <meta name={name} content={content} />
-    ))}
-    
+
+    {
+      meta.map(({ name, property, content }) =>
+        property ? (
+          <meta property={property} content={content} />
+        ) : (
+          <meta name={name} content={content} />
+        )
+      )
+    }
+
     <title>{title}</title>
 
     <!-- Preload critical assets -->
-    <link rel="preload" href="/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="/fonts/space-grotesk.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    
+
     <!-- Add PWA manifest -->
     <link rel="manifest" href="/manifest.json" />
   </head>
@@ -50,23 +61,23 @@ const showScrollFeatures = shouldShowScrollFeatures(Astro.url.pathname);
     <ParticleSystem />
     <Navigation />
     {showScrollFeatures && <ScrollIndicator />}
-    
+
     <main>
       <slot />
     </main>
 
     <script>
       // Add error boundary
-      window.addEventListener('error', (event) => {
-        console.error('Global error:', event.error);
+      window.addEventListener("error", (event) => {
+        console.error("Global error:", event.error);
         // Implement error UI
       });
 
       // Add performance monitoring
-      if ('performance' in window) {
-        window.addEventListener('load', () => {
-          const navigation = performance.getEntriesByType('navigation')[0];
-          console.log(`Page Load Time: ${navigation.loadEventEnd}ms`);
+      if ("performance" in window) {
+        window.addEventListener("load", () => {
+          const navigation = performance.getEntriesByType("navigation")[0];
+          console.log(`Page Load Time: ${navigation.duration}ms`);
         });
       }
     </script>
@@ -79,3 +90,29 @@ const showScrollFeatures = shouldShowScrollFeatures(Astro.url.pathname);
     height: 100vh;
   }
 </style>
+
+<script>
+  if (typeof window !== "undefined") {
+    // Intersection Observer for section animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "50px",
+      }
+    );
+
+    // Wait for DOM content to be loaded
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("section").forEach((section) => {
+        observer.observe(section);
+      });
+    });
+  }
+</script>

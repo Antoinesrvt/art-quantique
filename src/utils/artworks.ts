@@ -15,5 +15,5 @@ export async function getArtworksByCollection(collectionId: string) {
 
 export async function getArtwork(slug: string) {
   const artworks = await getAllArtworks();
-  return artworks.find(artwork => artwork.slug === slug);
+  return artworks.find(artwork => artwork.id === slug);
 } 
