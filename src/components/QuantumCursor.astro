@@ -1,0 +1,115 @@
+<div class="quantum-cursor">
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  <div class="cursor-particles"></div>
+</div>
+
+<style>
+  .quantum-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    will-change: transform;
+  }
+
+  .cursor-dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    background-color: var(--quantum-white);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s;
+  }
+
+  .cursor-ring {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(var(--quantum-blue-rgb), 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+  }
+
+  .cursor-particles {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(
+      circle at center,
+      rgba(var(--quantum-blue-rgb), 0.15) 0%,
+      transparent 70%
+    );
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+
+  :global(html:hover) .cursor-ring {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  :global(html:hover) .cursor-particles {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  :global(a:hover) ~ .quantum-cursor .cursor-dot {
+    width: 12px;
+    height: 12px;
+    background-color: var(--quantum-blue);
+  }
+
+  :global(a:hover) ~ .quantum-cursor .cursor-ring {
+    transform: translate(-50%, -50%) scale(1.5);
+    border-color: rgba(var(--quantum-blue-rgb), 0.8);
+  }
+
+  :global(.glass-card:hover) ~ .quantum-cursor .cursor-particles {
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+
+  @media (max-width: 768px) {
+    .quantum-cursor {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const cursor = document.querySelector('.quantum-cursor') as HTMLElement;
+  let mouseX = 0;
+  let mouseY = 0;
+  let cursorX = 0;
+  let cursorY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function updateCursor() {
+    const dx = mouseX - cursorX;
+    const dy = mouseY - cursorY;
+    
+    cursorX += dx * 0.2;
+    cursorY += dy * 0.2;
+    
+    if (cursor) {
+      cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+    }
+    
+    requestAnimationFrame(updateCursor);
+  }
+
+  updateCursor();
+</script> 

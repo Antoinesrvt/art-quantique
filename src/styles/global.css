@@ -28,6 +28,12 @@ html {
   scroll-behavior: smooth;
 }
 
+html.no-scroll {
+  scroll-behavior: auto;
+}
+
+
+
 body {
   background: var(--background);
   color: var(--quantum-white);
@@ -69,6 +75,16 @@ section.visible {
 html.no-scroll {
   scroll-behavior: auto;
 }
+
+/* a, button, input, select, .glass-card {
+  cursor: none;
+}
+
+@media (max-width: 768px) {
+  a, button, input, select, .glass-card {
+    cursor: pointer;
+  }
+} */
 
 @media (max-width: 768px) {
   h1 { font-size: 3rem; }

@@ -1,5 +1,7 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import ParticleGrid from "../components/ParticleGrid.astro";
+
 ---
 
 <Layout title="Théorie | Art Quantique">
@@ -13,61 +15,57 @@ import Layout from '../layouts/Layout.astro';
       <section class="theory-section glass-card">
         <h2>Mon Approche</h2>
         <p>
-          Mon art n'est pas abstrait, mais suggestif vers le figuratif. Je cherche à explorer le monde invisible qui nous compose et nous anime. Ma technique va au-delà du dripping traditionnel - c'est une projection dynamique en mouvement qui capture l'essence même des particules quantiques.
+          Mon art n'est pas abstrait, mais suggestif vers le figuratif. Je
+          cherche à explorer le monde invisible qui nous compose et nous anime.
+          Ma technique va au-delà du dripping traditionnel - c'est une
+          projection dynamique en mouvement qui capture l'essence même des
+          particules quantiques.
         </p>
         <p>
-          Depuis 2003, j'ai développé mes théories des particules élémentaires, fusionnant précision scientifique et expression artistique. Je suis fier d'être considéré comme l'un des pionniers de l'art quantique, créant des œuvres qui sont une ode visuelle aux composants essentiels de notre univers.
+          Depuis 2003, j'ai développé mes théories des particules élémentaires,
+          fusionnant précision scientifique et expression artistique. Je suis
+          fier d'être considéré comme l'un des pionniers de l'art quantique,
+          créant des œuvres qui sont une ode visuelle aux composants essentiels
+          de notre univers.
         </p>
       </section>
 
       <section class="theory-section glass-card">
         <h2>Le Language des Particules</h2>
-        <div class="particle-grid">
-          <div class="particle-card">
-            <div class="particle-color" style="--particle-color: var(--quantum-black)"></div>
-            <h3>Particule Antagoniste</h3>
-            <p>Le noir représente la force fondamentale, liant les extrêmes de l'espace-temps.</p>
-          </div>
-          <div class="particle-card">
-            <div class="particle-color" style="--particle-color: var(--quantum-blue)"></div>
-            <h3>Électron</h3>
-            <p>Le bleu symbolise l'énergie pure et le mouvement constant.</p>
-          </div>
-          <div class="particle-card">
-            <div class="particle-color" style="--particle-color: var(--quantum-red)"></div>
-            <h3>Positron</h3>
-            <p>Le rouge incarne la conscience et la mécanique cognitive.</p>
-          </div>
-          <div class="particle-card">
-            <div class="particle-color" style="--particle-color: var(--quantum-yellow)"></div>
-            <h3>Photon</h3>
-            <p>Le jaune représente la lumière et l'interaction électromagnétique.</p>
-          </div>
-          <div class="particle-card">
-            <div class="particle-color" style="--particle-color: var(--quantum-white)"></div>
-            <h3>Neutrino</h3>
-            <p>Le blanc symbolise la mémoire et la connexion au vivant.</p>
-          </div>
-        </div>
+        <ParticleGrid />
       </section>
 
       <section class="theory-section glass-card">
         <h2>Au-delà de la Toile</h2>
         <p>
-          Mon exploration ne se limite pas à la peinture. Dans les années 80, j'ai été pionnier dans l'incorporation du carbone dans la sculpture et la mode. J'utilise une variété de matériaux uniques, incluant des éléments minéraux, végétaux et marins, pour créer des œuvres qui transcendent les médiums traditionnels.
+          Mon exploration ne se limite pas à la peinture. Dans les années 80,
+          j'ai été pionnier dans l'incorporation du carbone dans la sculpture et
+          la mode. J'utilise une variété de matériaux uniques, incluant des
+          éléments minéraux, végétaux et marins, pour créer des œuvres qui
+          transcendent les médiums traditionnels.
         </p>
         <p>
-          Ma dernière création, le Triskel Bell (brevetée), représente l'apogée de mes recherches, démontrant la validité de mes théories à travers ses multiples applications. C'est ainsi que l'art quantique continue d'évoluer et de s'éveiller.
+          Ma dernière création, le Triskel Bell (brevetée), représente l'apogée
+          de mes recherches, démontrant la validité de mes théories à travers
+          ses multiples applications. C'est ainsi que l'art quantique continue
+          d'évoluer et de s'éveiller.
         </p>
       </section>
 
       <section class="theory-section glass-card">
         <h2>L'Origine de la Vie</h2>
         <p>
-          Mes recherches m'ont conduit à une découverte fascinante : une équation géométrique fondamentale, dérivée de l'hydrogène de l'univers primitif, pourrait être la clé de l'origine de la vie. Cette formule explique non seulement l'émergence de la vie, mais aussi son développement et sa diversité.
+          Mes recherches m'ont conduit à une découverte fascinante : une
+          équation géométrique fondamentale, dérivée de l'hydrogène de l'univers
+          primitif, pourrait être la clé de l'origine de la vie. Cette formule
+          explique non seulement l'émergence de la vie, mais aussi son
+          développement et sa diversité.
         </p>
         <p>
-          Dans mon récent ouvrage "EVQ : Notre cerveau est un univers quantique", je partage mon parcours depuis l'âge de 7 ans, mon expérience de mort imminente, et ma perspective scientifique unique sur la conscience et la vie elle-même.
+          Dans mon récent ouvrage "EVQ : Notre cerveau est un univers
+          quantique", je partage mon parcours depuis l'âge de 7 ans, mon
+          expérience de mort imminente, et ma perspective scientifique unique
+          sur la conscience et la vie elle-même.
         </p>
       </section>
     </div>
@@ -101,7 +99,11 @@ import Layout from '../layouts/Layout.astro';
   h1 {
     font-size: 3.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
@@ -116,6 +118,7 @@ import Layout from '../layouts/Layout.astro';
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    width: 100%; /* Ensure full width */
   }
 
   .theory-section {
@@ -123,6 +126,8 @@ import Layout from '../layouts/Layout.astro';
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%; /* Ensure full width */
+    box-sizing: border-box; /* Include padding in width */
   }
 
   .theory-section.visible {
@@ -133,7 +138,11 @@ import Layout from '../layouts/Layout.astro';
   h2 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
@@ -146,6 +155,7 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .particle-grid {
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2rem;
@@ -176,7 +186,11 @@ import Layout from '../layouts/Layout.astro';
   .particle-card h3 {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
@@ -203,20 +217,20 @@ import Layout from '../layouts/Layout.astro';
 
 <script>
   function handleScroll() {
-    const sections = document.querySelectorAll('.theory-section');
-    
-    sections.forEach(section => {
+    const sections = document.querySelectorAll(".theory-section");
+
+    sections.forEach((section) => {
       const rect = section.getBoundingClientRect();
       const isVisible = rect.top <= window.innerHeight * 0.8;
-      
+
       if (isVisible) {
-        section.classList.add('visible');
+        section.classList.add("visible");
       }
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     handleScroll();
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
   });
 </script>

@@ -6,6 +6,7 @@ import ParticleSystem from "../components/ParticleSystem.astro";
 import ScrollIndicator from "../components/ScrollIndicator.astro";
 import { generateSEOMeta } from "../utils/seo";
 import { shouldShowScrollFeatures } from "../utils/scroll";
+import QuantumCursor from "../components/QuantumCursor.astro";
 // import '../scripts/animations.ts';
 
 interface Props {
@@ -59,6 +60,7 @@ const showScrollFeatures = shouldShowScrollFeatures(Astro.url.pathname);
   </head>
   <body>
     <ParticleSystem />
+    <!-- <QuantumCursor /> -->
     <Navigation />
     {showScrollFeatures && <ScrollIndicator />}
 
@@ -84,12 +86,17 @@ const showScrollFeatures = shouldShowScrollFeatures(Astro.url.pathname);
   </body>
 </html>
 
-<style is:global>
-  .no-scroll {
-    overflow: hidden;
-    height: 100vh;
+<!-- <style is:global>
+  html {
+    cursor: none;
   }
-</style>
+
+  @media (max-width: 768px) {
+    html {
+      cursor: auto;
+    }
+  }
+</style> -->
 
 <script>
   if (typeof window !== "undefined") {
