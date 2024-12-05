@@ -9,7 +9,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "convert:artworks": "tsx src/scripts/convertArtworksToYaml.ts"
+    "convert:artworks": "tsx src/scripts/convertArtworksToYaml.ts",
+    "verify:images": "node src/scripts/verifyImages.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^8.2.3",
@@ -21,7 +22,9 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.10.1",
+    "glob-promise": "^6.0.7",
     "js-yaml": "^4.1.0",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.2"
   }
 }

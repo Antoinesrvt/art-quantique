@@ -2,13 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import type { Artwork } from "../../utils/artworks";
-import { getArtworkImagePath } from "../../utils/imagePaths";
 
 export async function getStaticPaths() {
   const artworks: Artwork[] = await getCollection("artworks");
   return artworks.map((artwork) => ({
     params: { id: artwork.id },
-    props: { artwork }
+    props: { artwork },
   }));
 }
 
@@ -22,13 +21,13 @@ if (!artwork) {
 <Layout
   title={`${artwork.data.title} | Art Quantique`}
   description={artwork.data.description}
-  image={getArtworkImagePath(artwork.data.image)}
+  image={artwork.data.image}
 >
   <main class="artwork-detail">
     <div class="artwork-container">
       <div class="artwork-image-container glass-card">
         <img
-          src={getArtworkImagePath(artwork.data.image)}
+          src={artwork.data.image}
           alt={artwork.data.title}
           class="artwork-image"
           width="800"
@@ -55,12 +54,24 @@ if (!artwork) {
             <p>{artwork.data.technique}</p>
           </div>
         </div>
-        {artwork.data.description && (
-          <div class="artwork-details">
-            <h3>À propos de l'œuvre</h3>
-            <p>{artwork.data.description}</p>
+        {
+          artwork.data.description && (
+            <div class="artwork-details">
+              <h3>À propos de l'œuvre</h3>
+              <p>{artwork.data.description}</p>
+            </div>
+          )
+        }
+        <div class="color-info">
+          <div
+            class="color-preview"
+            style={`background-color: var(--quantum-${artwork.data.color});`}
+          >
           </div>
-        )}
+          <span class="color-value">
+            {artwork.data.color}
+          </span>
+        </div>
 
         <nav class="artwork-navigation">
           <a href="/artworks" class="back-button"> ← Retour aux œuvres </a>
@@ -87,17 +98,21 @@ if (!artwork) {
     gap: 4rem;
     position: relative;
     z-index: 1;
+    align-items: start;
   }
 
   .artwork-image-container {
     position: sticky;
     top: 8rem;
     height: fit-content;
+    max-height: calc(100vh - 8rem);
+    overflow: auto;
   }
 
   .artwork-image {
     width: 100%;
-    height: auto;
+    height: fit-content;
+    max-height: calc(100vh - 8rem);
     border-radius: 10px;
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -203,10 +218,34 @@ if (!artwork) {
     z-index: 0;
   }
 
+  .color-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+
+  .color-preview {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 4px;
+    border: 2px solid var(--glass-border);
+  }
+
+  .color-value {
+    font-family: monospace;
+    color: var(--quantum-white);
+    opacity: 0.9;
+  }
+
   @media (max-width: 1024px) {
     .artwork-container {
       grid-template-columns: 1fr;
       gap: 2rem;
+      height: auto;
     }
 
     .artwork-image-container {

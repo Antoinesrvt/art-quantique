@@ -3,7 +3,8 @@ import Layout from "../../layouts/Layout.astro";
 import TimelineIndicator from "../../components/TimelineIndicator.astro";
 import CallToAction from "../../components/CallToAction.astro";
 import { getCollection } from "astro:content";
-import { getArtworkImagePath } from "../../utils/imagePaths";
+import { getImagePath } from "../../utils/image";
+import { Image } from "astro:assets";
 // Get all collections and artworks
 const collections = await getCollection("collections");
 const artworks = await getCollection("artworks");
@@ -37,26 +38,21 @@ const collectionArtworks = collections.map((collection) => ({
               <div class="collection-info">
                 <h2>{name}</h2>
                 <p class="collection-description">{description}</p>
-                <CallToAction href={`/collections/${id}`} variant="secondary">
-                  Explorer la Collection
-                </CallToAction>
+               
               </div>
 
               <div class="collection-preview">
                 {works.slice(0, 2).map((artwork) => (
-                  <a
-                    href={`/artworks/${artwork.id}`}
-                    class="artwork-preview"
-                  >
+                  <a href={`/artworks/${artwork.id}`} class="artwork-preview">
                     <div class="preview-image-container">
-                      <img
-                        src={getArtworkImagePath(
-                          artwork.data.image
-                        )}
+                      <Image
+                        src={getImagePath(artwork.data.image)}
                         alt={artwork.data.title || `Artwork ${artwork.id}`}
                         width="400"
                         height="400"
                         loading="lazy"
+                        format="webp"
+                        quality={80}
                       />
                       <div class="preview-overlay">
                         <h3>{artwork.data.title || `Artwork ${artwork.id}`}</h3>
@@ -145,6 +141,7 @@ const collectionArtworks = collections.map((collection) => ({
     transform: translateX(-50px);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    width: 100%;
   }
 
   .collection-section.visible {

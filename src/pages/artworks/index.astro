@@ -1,10 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import ArtworkCard from "../../components/ArtworkCard.astro";
 import { getCollection } from "astro:content";
 import type { ArtworkSize, ArtworkColor } from "../../content/config";
 import { artworkSizes, artworkColors } from "../../content/config";
-import { getArtworkImagePath } from "../../utils/imagePaths";
+import { getImagePath } from "../../utils/image";
+import { Image } from "astro:assets";
 // Get all collections and artworks
 const collections = await getCollection("collections");
 const artworks = await getCollection("artworks");
@@ -150,10 +150,8 @@ const collectionNames = new Map(collections.map((c) => [c.id, c.data.name]));
             role="listitem"
           >
             <div class="artwork-image">
-              <img
-                src={getArtworkImagePath(
-                  artwork.data.image
-                )}
+              <Image
+                src={getImagePath(artwork.data.image)}
                 alt={artwork.data.title}
                 loading="lazy"
                 width="400"
