@@ -1,25 +1,35 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import CollectionCard from '../components/CollectionCard.astro';
-import TheoryCard from '../components/TheoryCard.astro';
-import CallToAction from '../components/CallToAction.astro';
-import BottomCTA from '../components/BottomCTA.astro';
-import { collections } from '../data/collections';
-import { theories } from '../data/theories';
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import CollectionCard from "../components/CollectionCard.astro";
+import TheoryCard from "../components/TheoryCard.astro";
+import CallToAction from "../components/CallToAction.astro";
+import BottomCTA from "../components/BottomCTA.astro";
+import { getCollection } from "astro:content";
+import { theories } from "../data/theories";
+
+const collections = await getCollection("collections");
 ---
 
 <Layout title="Art Quantique | Servant Ermes">
   <main>
     <Hero />
-    
+
     <section id="about" class="glass-card">
       <div class="about-content">
         <h2>L'Art des Particules</h2>
-        <p>Servant Ermes transcende les frontières entre physique quantique et expression artistique. Chaque œuvre est une exploration des quatre forces fondamentales, représentées par les particules élémentaires : rouge pour l'interaction forte, bleue pour l'interaction faible, jaune pour l'interaction électromagnétique, et blanc pour la gravité.</p>
+        <p>
+          Servant Ermes transcende les frontières entre physique quantique et
+          expression artistique. Chaque œuvre est une exploration des quatre
+          forces fondamentales, représentées par les particules élémentaires :
+          rouge pour l'interaction forte, bleue pour l'interaction faible, jaune
+          pour l'interaction électromagnétique, et blanc pour la gravité.
+        </p>
         <div class="cta-buttons">
           <CallToAction href="/contact">Me Contacter</CallToAction>
-          <CallToAction href="/theory" variant="secondary">En Savoir Plus</CallToAction>
+          <CallToAction href="/theory" variant="secondary"
+            >En Savoir Plus</CallToAction
+          >
         </div>
       </div>
     </section>
@@ -29,16 +39,28 @@ import { theories } from '../data/theories';
         <h2>Collections</h2>
         <a href="/collections" class="see-all-link">
           Voir Toutes les Collections
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
         </a>
       </div>
       <div class="gallery">
-        {collections.map(collection => (
-          <CollectionCard {...collection} />
-        ))}
+        {
+          collections.map((collection) => (
+            <CollectionCard id={collection.id} data={collection.data} />
+          ))
+        }
       </div>
     </section>
 
@@ -47,16 +69,24 @@ import { theories } from '../data/theories';
         <h2>Théorie Quantique</h2>
         <a href="/theory" class="see-all-link">
           Explorer la Théorie
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
         </a>
       </div>
       <div class="theory-grid">
-        {theories.map(theory => (
-          <TheoryCard {...theory} />
-        ))}
+        {theories.map((theory) => <TheoryCard {...theory} />)}
       </div>
     </section>
 
@@ -90,7 +120,11 @@ import { theories } from '../data/theories';
   h2 {
     font-size: 3rem;
     font-weight: 300;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }

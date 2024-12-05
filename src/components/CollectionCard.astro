@@ -1,19 +1,26 @@
 ---
-import { type Collection } from '../data/collections';
+import type { CollectionEntry } from 'astro:content';
+import { getArtworkImagePath } from '../utils/imagePaths';
+interface Props {
+  id: string;
+  data: CollectionEntry<'collections'>['data'];
+}
 
-interface Props extends Collection {}
-
-const { id, name, description, coverImage } = Astro.props;
+const { id, data } = Astro.props;
 ---
 
 <a href={`/collections/${id}`} class="collection glass-card">
   <div class="collection-inner">
     <div class="collection-image-container">
-      <img src={coverImage} alt={name} loading="lazy" />
+      <img
+        src={getArtworkImagePath(data.coverImage)}
+        alt={data.name}
+        loading="lazy"
+      />
     </div>
     <div class="collection-info">
-      <h3>{name}</h3>
-      <p>{description}</p>
+      <h3>{data.name}</h3>
+      <p>{data.description}</p>
     </div>
     <div class="collection-overlay"></div>
   </div>

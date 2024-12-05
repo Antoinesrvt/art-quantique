@@ -1,20 +1,18 @@
 ---
-export const prerender = true;
 import Layout from "../../layouts/Layout.astro";
-import { getArtwork } from "../../utils/artworks";
-import { shouldShowScrollFeatures } from "../../utils/scroll";
+import { getCollection } from "astro:content";
+import type { Artwork } from "../../utils/artworks";
+import { getArtworkImagePath } from "../../utils/imagePaths";
 
 export async function getStaticPaths() {
-  const { getAllArtworks } = await import('../../utils/artworks');
-  const artworks = await getAllArtworks();
+  const artworks: Artwork[] = await getCollection("artworks");
   return artworks.map((artwork) => ({
     params: { id: artwork.id },
-    props: { artwork },
+    props: { artwork }
   }));
 }
 
 const { artwork } = Astro.props;
-const showScrollFeatures = shouldShowScrollFeatures(Astro.url.pathname);
 
 if (!artwork) {
   return Astro.redirect("/404");
@@ -24,13 +22,13 @@ if (!artwork) {
 <Layout
   title={`${artwork.data.title} | Art Quantique`}
   description={artwork.data.description}
-  image={artwork.data.image}
+  image={getArtworkImagePath(artwork.data.image)}
 >
   <main class="artwork-detail">
     <div class="artwork-container">
       <div class="artwork-image-container glass-card">
         <img
-          src={artwork.data.image}
+          src={getArtworkImagePath(artwork.data.image)}
           alt={artwork.data.title}
           class="artwork-image"
           width="800"
@@ -57,10 +55,10 @@ if (!artwork) {
             <p>{artwork.data.technique}</p>
           </div>
         </div>
-        {artwork.data.longDescription && (
+        {artwork.data.description && (
           <div class="artwork-details">
             <h3>À propos de l'œuvre</h3>
-            <p>{artwork.data.longDescription}</p>
+            <p>{artwork.data.description}</p>
           </div>
         )}
 

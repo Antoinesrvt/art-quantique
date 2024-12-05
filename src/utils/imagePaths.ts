@@ -1,14 +1,10 @@
-export function getArtworkImagePath(artwork: {
-  collectionId: string;
-  image: string;
-  size?: string;
-  color?: string;
-}): string {
-  const baseUrl = '/artworks';
-  
-  if (artwork.collectionId === 'danse-des-particules') {
-    return `${baseUrl}/${artwork.collectionId}/${artwork.size}/${artwork.color}/${artwork.image}`;
-  }
-  
-  return `${baseUrl}/${artwork.collectionId}/${artwork.image}`;
-} 
+export function getArtworkImagePath(imageName: string): string {
+  // Remove spaces and special characters, convert to lowercase
+  const safeImagePath = imageName
+    .replace(/\s+/g, '-')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, ''); // Remove accents
+
+  return `/images${safeImagePath}`;
+}

@@ -8,13 +8,20 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "convert:artworks": "tsx src/scripts/convertArtworksToYaml.ts"
   },
   "dependencies": {
-    "astro": "^4.15.3",
-    "@fontsource/space-grotesk": "^5.0.17",
-    "three": "^0.162.0",
     "@astrojs/node": "^8.2.3",
-    "nodemailer": "^6.9.11"
+    "@fontsource/space-grotesk": "^5.0.17",
+    "astro": "^4.15.3",
+    "nodemailer": "^6.9.11",
+    "three": "^0.162.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.1",
+    "js-yaml": "^4.1.0",
+    "tsx": "^4.19.2"
   }
 }

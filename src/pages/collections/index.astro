@@ -2,13 +2,19 @@
 import Layout from "../../layouts/Layout.astro";
 import TimelineIndicator from "../../components/TimelineIndicator.astro";
 import CallToAction from "../../components/CallToAction.astro";
-import { collections } from "../../data/collections";
-import { artworks } from "../../data/artworks";
+import { getCollection } from "astro:content";
+import { getArtworkImagePath } from "../../utils/imagePaths";
+// Get all collections and artworks
+const collections = await getCollection("collections");
+const artworks = await getCollection("artworks");
 
 // Group artworks by collection
-const collectionArtworks = collections.map(collection => ({
-  ...collection,
-  works: artworks.filter(a => a.collectionId === collection.id)
+const collectionArtworks = collections.map((collection) => ({
+  ...collection.data,
+  id: collection.id,
+  works: artworks.filter(
+    (artwork) => artwork.data.collectionId === collection.id
+  ),
 }));
 ---
 
@@ -25,16 +31,13 @@ const collectionArtworks = collections.map(collection => ({
       {
         collectionArtworks.map(({ name, works, description, id }, index) => (
           <section class="collection-section glass-card" data-index={index}>
-            <TimelineIndicator year={works[0]?.year} index={index} />
+            <TimelineIndicator year={works[0]?.data.year} index={index} />
 
             <div class="collection-content">
               <div class="collection-info">
                 <h2>{name}</h2>
                 <p class="collection-description">{description}</p>
-                <CallToAction
-                  href={`/collections/${id}`}
-                  variant="secondary"
-                >
+                <CallToAction href={`/collections/${id}`} variant="secondary">
                   Explorer la Collection
                 </CallToAction>
               </div>
@@ -42,29 +45,31 @@ const collectionArtworks = collections.map(collection => ({
               <div class="collection-preview">
                 {works.slice(0, 2).map((artwork) => (
                   <a
-                    href={`/collections/${artwork.id}`}
+                    href={`/artworks/${artwork.id}`}
                     class="artwork-preview"
                   >
                     <div class="preview-image-container">
                       <img
-                        src={artwork.image}
-                        alt={artwork.title}
+                        src={getArtworkImagePath(
+                          artwork.data.image
+                        )}
+                        alt={artwork.data.title || `Artwork ${artwork.id}`}
                         width="400"
                         height="400"
                         loading="lazy"
                       />
                       <div class="preview-overlay">
-                        <h3>{artwork.title}</h3>
-                        <p>{artwork.description}</p>
+                        <h3>{artwork.data.title || `Artwork ${artwork.id}`}</h3>
+                        <p>
+                          {artwork.data.description ||
+                            `${artwork.data.size} - ${artwork.data.color}`}
+                        </p>
                       </div>
                     </div>
                   </a>
                 ))}
                 {works.length > 2 && (
-                  <a
-                    href={`/collections/${id}`}
-                    class="see-more glass-card"
-                  >
+                  <a href={`/collections/${id}`} class="see-more glass-card">
                     <div class="see-more-content">
                       <span class="count">+{works.length - 2}</span>
                       <span class="text">Voir Plus</span>

@@ -1,35 +1,22 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { artworks, type ArtworkSize, type Artwork } from "../../data/artworks";
-import { collections, type Collection } from "../../data/collections";
-
-// Type-safe filter options
-const availableSizes: ArtworkSize[] = [
-  "100x50",
-  "100x60",
-  "100x73",
-  "61x50",
-  "60x60",
-  "80x40",
-  "80x80",
-  "81x65",
-];
-const availableColors = ["red", "blue", "yellow", "white"] as const;
-type ColorOption = (typeof availableColors)[number];
+import ArtworkCard from "../../components/ArtworkCard.astro";
+import { getCollection } from "astro:content";
+import type { ArtworkSize, ArtworkColor } from "../../content/config";
+import { artworkSizes, artworkColors } from "../../content/config";
+import { getArtworkImagePath } from "../../utils/imagePaths";
+// Get all collections and artworks
+const collections = await getCollection("collections");
+const artworks = await getCollection("artworks");
 
 // Get initial filters from URL
 const urlParams = new URL(Astro.request.url).searchParams;
 const initialCollection = urlParams.get("collection");
 const initialSize = urlParams.get("size") as ArtworkSize | null;
-const initialColor = urlParams.get("color") as ColorOption | null;
+const initialColor = urlParams.get("color") as ArtworkColor | null;
 
 // Get collection names for display
-const collectionNames = new Map(collections.map((c) => [c.id, c.name]));
-
-// Format size for display
-function formatSize(size: ArtworkSize): string {
-  return `${size} cm`;
-}
+const collectionNames = new Map(collections.map((c) => [c.id, c.data.name]));
 ---
 
 <Layout title="Œuvres | Art Quantique">
@@ -84,7 +71,7 @@ function formatSize(size: ArtworkSize): string {
                   data-value={collection.id}
                   aria-pressed={collection.id === initialCollection}
                 >
-                  {collection.name}
+                  {collection.data.name}
                 </button>
               ))
             }
@@ -100,25 +87,24 @@ function formatSize(size: ArtworkSize): string {
               aria-label="Filtrer par dimensions"
             >
               <option value="">Toutes les dimensions</option>
-              {availableSizes.map(size => (
-                <option 
-                  value={size} 
-                  selected={size === initialSize}
-                >
-                  {size} cm
-                </option>
-              ))}
+              {
+                artworkSizes.map((size) => (
+                  <option value={size} selected={size === initialSize}>
+                    {size}
+                  </option>
+                ))
+              }
             </select>
             <div class="select-arrow" aria-hidden="true">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="20" 
-                height="20" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2" 
-                stroke-linecap="round" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
                 stroke-linejoin="round"
               >
                 <polyline points="6 9 12 15 18 9"></polyline>
@@ -135,7 +121,7 @@ function formatSize(size: ArtworkSize): string {
             aria-label="Filtrer par couleur"
           >
             {
-              availableColors.map((color) => (
+              artworkColors.map((color) => (
                 <button
                   class={`filter-btn color-btn ${color === initialColor ? "active" : ""}`}
                   data-filter="color"
@@ -150,7 +136,6 @@ function formatSize(size: ArtworkSize): string {
             }
           </div>
         </div>
-
       </div>
     </div>
 
@@ -160,25 +145,27 @@ function formatSize(size: ArtworkSize): string {
           <a
             href={`/artworks/${artwork.id}`}
             class="artwork-card glass-card"
-            data-size={artwork.size}
-            data-collection={artwork.collectionId}
+            data-size={artwork.data.size}
+            data-collection={artwork.data.collectionId}
             role="listitem"
           >
             <div class="artwork-image">
               <img
-                src={artwork.image}
-                alt={artwork.title}
+                src={getArtworkImagePath(
+                  artwork.data.image
+                )}
+                alt={artwork.data.title}
                 loading="lazy"
                 width="400"
                 height="400"
               />
             </div>
             <div class="artwork-info">
-              <h2>{artwork.title}</h2>
-              <p>{artwork.description}</p>
+              <h2>{artwork.data.title}</h2>
+              <p>{artwork.data.description}</p>
               <div class="artwork-meta">
-                <span>{artwork.year}</span>
-                <span>{artwork.size} cm</span>
+                <span>{artwork.data.year}</span>
+                <span>{artwork.data.size} cm</span>
                 {/* <span class="collection-tag">{collectionNames.get(artwork.collectionId)}</span> */}
               </div>
             </div>
@@ -683,7 +670,9 @@ function formatSize(size: ArtworkSize): string {
     const searchInput = document.getElementById("search") as HTMLInputElement;
     const filterButtons =
       document.querySelectorAll<HTMLButtonElement>(".filter-btn");
-    const sizeSelect = document.getElementById("size-select") as HTMLSelectElement;
+    const sizeSelect = document.getElementById(
+      "size-select"
+    ) as HTMLSelectElement;
     const resetButton = document.getElementById("reset-filters");
 
     sizeSelect?.addEventListener("change", (e) => {
@@ -730,14 +719,14 @@ function formatSize(size: ArtworkSize): string {
       activeFilters.color = null;
       activeFilters.size = null;
       activeFilters.search = "";
-      
+
       searchInput.value = "";
       sizeSelect.value = ""; // Reset select
-      filterButtons.forEach(btn => {
+      filterButtons.forEach((btn) => {
         btn.classList.remove("active");
         btn.setAttribute("aria-pressed", "false");
       });
-      
+
       updateArtworks();
     });
 
@@ -749,7 +738,9 @@ function formatSize(size: ArtworkSize): string {
         if (key === "size" && sizeSelect) {
           sizeSelect.value = value;
         } else {
-          const btn = document.querySelector<HTMLButtonElement>(`[data-filter="${key}"][data-value="${value}"]`);
+          const btn = document.querySelector<HTMLButtonElement>(
+            `[data-filter="${key}"][data-value="${value}"]`
+          );
           if (btn) {
             btn.classList.add("active");
             btn.setAttribute("aria-pressed", "true");
@@ -757,7 +748,7 @@ function formatSize(size: ArtworkSize): string {
         }
       }
     });
-    
+
     updateArtworks();
   });
 </script>

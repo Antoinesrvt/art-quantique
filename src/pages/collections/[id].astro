@@ -1,36 +1,39 @@
 ---
-export const prerender = true;
-import Layout from '../../layouts/Layout.astro';
-import ArtworkCard from '../../components/ArtworkCard.astro';
-import CallToAction from '../../components/CallToAction.astro';
-import { collections } from '../../data/collections';
-import { getArtworksByCollection } from '../../utils/artworks';
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import ArtworkCard from "../../components/ArtworkCard.astro";
+import CallToAction from "../../components/CallToAction.astro";
+import type { CollectionEntry } from "astro:content";
+export async function getStaticPaths() {
+  const collections: CollectionEntry<"collections">[] = await getCollection("collections");
+  return collections.map((collection) => ({
+    params: { id: collection.id },
+    props: { collection },
+    }));
+  }
 
-export function getStaticPaths() {
-  return collections.map(collection => ({
-    params: { id: collection.id }
-  }));
-}
-
-const { id } = Astro.params;
-const collection = collections.find(c => c.id === id);
-const collectionArtworks = await getArtworksByCollection(id);
+const { collection } = Astro.props;
+const artworks: CollectionEntry<"artworks">[] = await getCollection("artworks");
+const collectionArtworks = artworks.filter(
+  (artwork) => artwork.data.collectionId === collection.id
+);
 
 if (!collection) {
-  return Astro.redirect('/404');
+  return Astro.redirect("/404");
 }
+
 ---
 
-<Layout 
-  title={`${collection.name} | Art Quantique`} 
-  description={collection.description}
-  image={collection.coverImage}
+<Layout
+  title={`${collection.data.name} | Art Quantique`}
+  description={collection.data.description}
+  image={collection.data.coverImage}
 >
   <main class="collection-detail">
     <header class="collection-header glass-card">
       <div class="header-content">
-        <h1>{collection.name}</h1>
-        <p class="description">{collection.longDescription}</p>
+        <h1>{collection.data.name}</h1>
+        <p class="description">{collection.data.longDescription}</p>
         <div class="collection-meta">
           <div class="meta-item">
             <span class="label">Œuvres</span>
@@ -38,27 +41,35 @@ if (!collection) {
           </div>
           <div class="meta-item">
             <span class="label">Année</span>
-            <span class="value">{collection.year}</span>
+            <span class="value">{collection.data.year}</span>
           </div>
         </div>
       </div>
-      <div class="header-background" style={`--bg-image: url(${collection.coverImage})`}></div>
+      <div
+        class="header-background"
+        style={`--bg-image: url(${collection.data.coverImage})`}
+      >
+      </div>
     </header>
 
     <section class="collection-artworks">
       <div class="artworks-grid">
-        {collectionArtworks.map(artwork => (
-          <ArtworkCard {...artwork.data} />
-        ))}
+        {
+          collectionArtworks.map((artwork) => (
+            <ArtworkCard id={artwork.id} data={artwork.data} />
+          ))
+        }
       </div>
     </section>
 
     <section class="collection-cta glass-card">
       <h2>Intéressé par cette collection ?</h2>
-      <p>Contactez-moi pour en savoir plus sur les ��uvres disponibles</p>
+      <p>Contactez-moi pour en savoir plus sur les uvres disponibles</p>
       <div class="cta-buttons">
         <CallToAction href="/contact">Me Contacter</CallToAction>
-        <CallToAction href="/collections" variant="secondary">Voir Toutes les Collections</CallToAction>
+        <CallToAction href="/collections" variant="secondary"
+          >Voir Toutes les Collections</CallToAction
+        >
       </div>
     </section>
   </main>
@@ -102,7 +113,11 @@ if (!collection) {
   h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
     opacity: 0;
@@ -165,7 +180,11 @@ if (!collection) {
   .collection-cta h2 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
     -webkit-background-clip: text;
     color: transparent;
   }
