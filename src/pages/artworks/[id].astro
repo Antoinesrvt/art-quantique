@@ -1,10 +1,12 @@
 ---
 export const prerender = true;
 import Layout from "../../layouts/Layout.astro";
-import { artworks } from "../../data/artworks";
+import { getArtwork } from "../../utils/artworks";
 import { shouldShowScrollFeatures } from "../../utils/scroll";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const { getAllArtworks } = await import('../../utils/artworks');
+  const artworks = await getAllArtworks();
   return artworks.map((artwork) => ({
     params: { id: artwork.id },
     props: { artwork },
@@ -20,16 +22,16 @@ if (!artwork) {
 ---
 
 <Layout
-  title={`${artwork.title} | Art Quantique`}
-  description={artwork.description}
-  image={artwork.image}
+  title={`${artwork.data.title} | Art Quantique`}
+  description={artwork.data.description}
+  image={artwork.data.image}
 >
   <main class="artwork-detail">
     <div class="artwork-container">
       <div class="artwork-image-container glass-card">
         <img
-          src={artwork.image}
-          alt={artwork.title}
+          src={artwork.data.image}
+          alt={artwork.data.title}
           class="artwork-image"
           width="800"
           height="800"
@@ -38,28 +40,29 @@ if (!artwork) {
       </div>
 
       <div class="artwork-info glass-card">
-        <h1>{artwork.title}</h1>
-        <p class="description">{artwork.description}</p>
+        <h1>{artwork.data.title}</h1>
+        <p class="description">{artwork.data.description}</p>
 
         <div class="artwork-meta">
           <div class="meta-item">
             <h3>Année</h3>
-            <p>{artwork.year}</p>
+            <p>{artwork.data.year}</p>
           </div>
           <div class="meta-item">
             <h3>Dimensions</h3>
-            <p>{artwork.size}</p>
+            <p>{artwork.data.size}</p>
           </div>
           <div class="meta-item">
             <h3>Technique</h3>
-            <p>{artwork.technique}</p>
+            <p>{artwork.data.technique}</p>
           </div>
         </div>
-
-        <div class="artwork-details">
-          <h3>À propos de l'œuvre</h3>
-          <p>{artwork.details}</p>
-        </div>
+        {artwork.data.longDescription && (
+          <div class="artwork-details">
+            <h3>À propos de l'œuvre</h3>
+            <p>{artwork.data.longDescription}</p>
+          </div>
+        )}
 
         <nav class="artwork-navigation">
           <a href="/artworks" class="back-button"> ← Retour aux œuvres </a>

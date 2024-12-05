@@ -21,7 +21,7 @@ export const collections: Collection[] = [
     id: "univers",
     name: "Univers",
     description: "Les mystères cosmiques dévoilés",
-    coverImage: "/collections/univers/univers bleu 100X60  05-09-22 servant ermes.jpg", // You'll replace with actual image path
+    coverImage: "/artworks/univers/univers bleu 100X60  05-09-22 servant ermes.jpg", // You'll replace with actual image path
     longDescription:
       "Une série qui explore les vastes étendues de l'univers, des trous noirs aux nébuleuses, en passant par les galaxies lointaines.",
     year: "2024",

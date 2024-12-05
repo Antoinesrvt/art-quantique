@@ -4,7 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import ArtworkCard from '../../components/ArtworkCard.astro';
 import CallToAction from '../../components/CallToAction.astro';
 import { collections } from '../../data/collections';
-import { artworks } from '../../data/artworks';
+import { getArtworksByCollection } from '../../utils/artworks';
 
 export function getStaticPaths() {
   return collections.map(collection => ({
@@ -13,12 +13,9 @@ export function getStaticPaths() {
 }
 
 const { id } = Astro.params;
-// Find the correct collection based on URL id
 const collection = collections.find(c => c.id === id);
-// Get artworks for this collection
-const collectionArtworks = artworks.filter(a => a.collectionId === id);
+const collectionArtworks = await getArtworksByCollection(id);
 
-// Handle case where collection is not found
 if (!collection) {
   return Astro.redirect('/404');
 }
@@ -51,14 +48,14 @@ if (!collection) {
     <section class="collection-artworks">
       <div class="artworks-grid">
         {collectionArtworks.map(artwork => (
-          <ArtworkCard {...artwork} />
+          <ArtworkCard {...artwork.data} />
         ))}
       </div>
     </section>
 
     <section class="collection-cta glass-card">
       <h2>Intéressé par cette collection ?</h2>
-      <p>Contactez-moi pour en savoir plus sur les œuvres disponibles</p>
+      <p>Contactez-moi pour en savoir plus sur les ��uvres disponibles</p>
       <div class="cta-buttons">
         <CallToAction href="/contact">Me Contacter</CallToAction>
         <CallToAction href="/collections" variant="secondary">Voir Toutes les Collections</CallToAction>

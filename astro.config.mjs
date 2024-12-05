@@ -3,7 +3,7 @@ import node from '@astrojs/node';
 
 export default defineConfig({
   base: '/',
-  output: "server",
+  output: "static",
   adapter: node({
     mode: "standalone",
   }),

@@ -1,19 +1,38 @@
 ---
-import { type Artwork } from '../data/artworks';
+import type { CollectionEntry } from 'astro:content';
 
-interface Props extends Artwork {}
+interface Props {
+  id: string;
+  data: CollectionEntry<'artworks'>['data'];
+}
 
-const { id, title, description, image } = Astro.props;
+const { id, data } = Astro.props;
+const { title, description, image } = data;
+
+// Fallback title if not provided
+const displayTitle = title || `Artwork ${id}`;
+// Fallback description if not provided
+const displayDescription = description || `${data.size} - ${data.color}`;
 ---
 
 <a href={`/artworks/${id}`} class="artwork glass-card">
   <div class="artwork-inner">
     <div class="artwork-image-container">
-      <img src={image} alt={title} loading="lazy" />
+      <img 
+        src={image} 
+        alt={displayTitle} 
+        loading="lazy" 
+        width="400"
+        height="400"
+      />
     </div>
     <div class="artwork-info">
-      <h3>{title}</h3>
-      <p>{description}</p>
+      <h3>{displayTitle}</h3>
+      <p>{displayDescription}</p>
+      <!-- <div class="artwork-meta">
+        <span class="size">{data.size}</span>
+        <span class="color" style={`--artwork-color: ${data.color}`}>{data.color}</span>
+      </div> -->
     </div>
     <div class="artwork-overlay"></div>
   </div>
