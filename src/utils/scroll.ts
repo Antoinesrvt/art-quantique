@@ -1,8 +1,5 @@
 export function shouldShowScrollFeatures(pathname: string): boolean {
-  const noScrollPages = [
-    '/contact',
-    '/artworks/'
-  ];
+  const noScrollPages = ["/contact", "/artworks", "/artworks"];
   
   return !noScrollPages.some(page => pathname.startsWith(page));
 }

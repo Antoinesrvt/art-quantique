@@ -1,0 +1,16 @@
+{
+  "name": "Art Quantique",
+  "short_name": "ArtQuantique",
+  "description": "Art gallery showcasing quantum-inspired artworks",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#191919",
+  "theme_color": "#0A84FF",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+} 

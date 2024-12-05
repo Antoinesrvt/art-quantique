@@ -1,0 +1,31 @@
+---
+interface Props {
+  fallback?: string;
+}
+
+const { fallback = "Une erreur s'est produite" } = Astro.props;
+---
+
+<div class="error-boundary glass-card">
+  <h2>{fallback}</h2>
+  <button onclick="window.location.reload()">Réessayer</button>
+</div>
+
+<style>
+  .error-boundary {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+  }
+  
+  button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--quantum-blue);
+    border: none;
+    border-radius: 8px;
+    color: var(--quantum-white);
+    cursor: pointer;
+  }
+</style> 

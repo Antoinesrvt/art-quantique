@@ -1,3 +1,4 @@
+
 :root {
   --quantum-red: rgb(255, 59, 48);
   --quantum-blue: rgb(10, 132, 255);
@@ -92,25 +93,3 @@ html.no-scroll {
   nav ul { gap: 1.5rem; }
   .scroll-indicator { display: none; }
 }
-
-
-/* <script>
-  // Intersection Observer for section animations
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, {
-    threshold: 0.1,
-    rootMargin: '50px'
-  });
-
-  // Wait for DOM content to be loaded
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('section').forEach(section => {
-      observer.observe(section);
-    });
-  });
-</script> */
