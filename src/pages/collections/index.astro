@@ -30,7 +30,7 @@ const collectionArtworks = collections.map((collection) => ({
 
     <div class="collections-timeline">
       {
-        collectionArtworks.map(({ name, works, description, id }, index) => (
+        collectionArtworks.map(({ name, works, description, id, year }, index) => (
           <section class="collection-section glass-card" data-index={index}>
             <TimelineIndicator year={works[0]?.data.year} index={index} />
 
@@ -305,14 +305,38 @@ const collectionArtworks = collections.map((collection) => ({
     opacity: 0.8;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1200px) {
     .collection-content {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1.5fr;
       gap: 2rem;
     }
 
     .collection-preview {
       grid-template-columns: repeat(2, 1fr);
+    }
+
+    h1 {
+      font-size: 3rem;
+    }
+
+    .collection-info h2 {
+      font-size: 1.8rem;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .collections-page {
+      padding: 6rem 1.5rem;
+    }
+
+    .collection-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .collection-info {
+      max-width: 600px;
+      margin: 0 auto;
     }
   }
 
@@ -321,12 +345,69 @@ const collectionArtworks = collections.map((collection) => ({
       padding: 6rem 1rem;
     }
 
+    .collection-header {
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
     h1 {
       font-size: 2.5rem;
     }
 
+    .subtitle {
+      font-size: 1rem;
+    }
+
+    .collection-section {
+      padding: 1.5rem;
+    }
+
     .collection-preview {
       grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .preview-overlay h3 {
+      font-size: 1.1rem;
+    }
+
+    .preview-overlay p {
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .collections-page {
+      padding: 5rem 0.75rem;
+    }
+
+    .collection-header {
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .collection-section {
+      padding: 1rem;
+    }
+
+    .collection-info h2 {
+      font-size: 1.5rem;
+    }
+
+    .collection-description {
+      font-size: 0.9rem;
+    }
+
+    .see-more-content .count {
+      font-size: 1.5rem;
+    }
+
+    .see-more-content .text {
+      font-size: 0.9rem;
     }
   }
 </style>

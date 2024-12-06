@@ -215,4 +215,171 @@ const collections = await getCollection("collections");
   #about {
     margin-top: 0;
   }
+
+  .hero {
+    min-height: 100vh;
+    padding: 6rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 300;
+    margin-bottom: 1rem;
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 300;
+    margin-bottom: 2rem;
+    background: linear-gradient(
+      45deg,
+      var(--quantum-white),
+      var(--quantum-blue)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  section {
+    padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 5vw, 2rem);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .see-all-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--quantum-white);
+    text-decoration: none;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    transition: all 0.3s ease;
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
+    margin-top: 3rem;
+  }
+
+  .featured-collections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .theory {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    margin-top: 4rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: clamp(2rem, 5vw, 4rem);
+    border-radius: 20px;
+  }
+
+  .theory-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .cta-section {
+    text-align: center;
+    padding: clamp(3rem, 8vw, 6rem) 0;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1rem, 3vw, 2rem);
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: 4rem 1rem;
+    }
+
+    .section-header {
+      justify-content: center;
+      text-align: center;
+    }
+
+    .section-header .see-all-link {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .theory {
+      margin: 2rem 1rem;
+      padding: 2rem 1rem;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    section {
+      padding: 3rem 1rem;
+    }
+
+    .gallery {
+      gap: 1rem;
+    }
+
+    .theory-content {
+      gap: 1.5rem;
+    }
+  }
+
+  /* Animation classes */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 1s ease forwards;
+  }
+
+  .fade-up-delay-1 {
+    animation-delay: 0.2s;
+  }
+
+  .fade-up-delay-2 {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 </style>

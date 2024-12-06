@@ -9,19 +9,27 @@ const navItems = [
 ---
 
 <nav>
-  <ul>
-    {navItems.map(item => (
-      <li>
-        <a 
-          href={item.href}
-          class={Astro.url.pathname === item.href ? 'active' : ''}
-          aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
-        >
-          {item.text}
-        </a>
-      </li>
-    ))}
-  </ul>
+  <div class="nav-container">
+    <a href="/" class="logo">Art Quantique</a>
+    
+    <button class="mobile-menu-btn" aria-label="Menu" aria-expanded="false">
+      <span class="hamburger"></span>
+    </button>
+
+    <ul class="nav-links">
+      {navItems.map(item => (
+        <li>
+          <a 
+            href={item.href}
+            class={Astro.url.pathname === item.href ? 'active' : ''}
+            aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
+          >
+            {item.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
 </nav>
 
 <style>
@@ -29,23 +37,42 @@ const navItems = [
     position: fixed;
     top: 0;
     width: 100%;
-    padding: 1.5rem;
+    padding: 1rem;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
     z-index: 100;
     border-bottom: 1px solid var(--glass-border);
   }
 
-  ul {
+  .nav-container {
     display: flex;
-    justify-content: center;
-    gap: 3rem;
-    list-style: none;
+    justify-content: space-between;
+    align-items: center;
     max-width: 1400px;
     margin: 0 auto;
+    padding: 0 1rem;
   }
 
-  a {
+  .logo {
+    color: var(--quantum-white);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    background: linear-gradient(45deg, var(--quantum-white), var(--quantum-blue));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-links a {
     color: var(--quantum-white);
     text-decoration: none;
     text-transform: uppercase;
@@ -56,7 +83,7 @@ const navItems = [
     transition: color 0.3s ease;
   }
 
-  a::after {
+  .nav-links a::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -67,23 +94,116 @@ const navItems = [
     transition: width 0.3s ease;
   }
 
-  a:hover::after,
-  a.active::after {
+  .nav-links a:hover::after,
+  .nav-links a.active::after {
     width: 100%;
   }
 
-  a.active {
+  .nav-links a.active {
     color: var(--quantum-blue);
   }
 
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+
+  .hamburger {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--quantum-white);
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .hamburger::before,
+  .hamburger::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: var(--quantum-white);
+    transition: all 0.3s ease;
+  }
+
+  .hamburger::before {
+    top: -8px;
+  }
+
+  .hamburger::after {
+    bottom: -8px;
+  }
+
   @media (max-width: 768px) {
-    ul {
-      gap: 1.5rem;
-      padding: 0 1rem;
+    .mobile-menu-btn {
+      display: block;
     }
 
-    a {
-      font-size: 0.8rem;
+    .nav-links {
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      gap: 2rem;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-menu-btn[aria-expanded="true"] .hamburger {
+      background: transparent;
+    }
+
+    .mobile-menu-btn[aria-expanded="true"] .hamburger::before {
+      transform: rotate(45deg);
+      top: 0;
+    }
+
+    .mobile-menu-btn[aria-expanded="true"] .hamburger::after {
+      transform: rotate(-45deg);
+      bottom: 0;
     }
   }
 </style>
+
+<script>
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  const navLinks = document.querySelector('.nav-links');
+
+  mobileMenuBtn?.addEventListener('click', () => {
+    const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+    mobileMenuBtn.setAttribute('aria-expanded', (!isExpanded).toString());
+    navLinks?.classList.toggle('active');
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('nav') && navLinks?.classList.contains('active')) {
+      mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+      navLinks.classList.remove('active');
+    }
+  });
+
+  // Close menu when clicking on a link
+  navLinks?.addEventListener('click', () => {
+    mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+    navLinks.classList.remove('active');
+  });
+</script>
